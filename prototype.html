@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>idOS Trusted Agents — Dashboard Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#060608;--s1:#0c0c10;--s2:#12121a;--s3:#191922;--s4:#20202c;
+--b1:#272738;--b2:#35354a;--b3:#44445e;
+--t1:#eeeef3;--t2:#a0a0b8;--t3:#6c6c84;--t4:#46465a;
+--green:#00e87b;--gd:#00e87b10;--gm:#00e87b25;--gb:#00e87b50;--gf:#00e87bdd;
+--blue:#4d90ff;--bd:#4d90ff10;--bm:#4d90ff25;
+--orange:#ff8c3a;--od:#ff8c3a10;--om:#ff8c3a25;
+--purple:#9d7aff;--pd:#9d7aff10;
+--red:#ff4d6a;--rd:#ff4d6a10;
+--yellow:#ffd84d;--yd:#ffd84d10;
+--mono:'JetBrains Mono',monospace;
+--sans:'Outfit',-apple-system,sans-serif;
+}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100vh}
+.topbar{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;z-index:50}
+.topbar .logo{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:7px}
+.topbar .logo .dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--gm)}
+.topbar .sep{flex:1}
+.topbar .user-pill{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 6px;background:var(--s3);border:1px solid var(--b1);border-radius:99px;font-family:var(--mono);font-size:10px;color:var(--t2)}
+.topbar .user-pill .avatar{width:20px;height:20px;border-radius:50%;background:var(--gm);display:flex;align-items:center;justify-content:center;font-size:10px}
+.topbar .cred-pills{display:flex;gap:4px}
+.cp{font-family:var(--mono);font-size:8.5px;padding:3px 7px;border-radius:3px;font-weight:600;letter-spacing:.04em}
+.cp-pop{background:var(--gd);color:var(--green);border:1px solid #00e87b33}
+.cp-kyc{background:var(--bd);color:var(--blue);border:1px solid #4d90ff33}
+.cp-none{background:var(--s3);color:var(--t4);border:1px solid var(--b1)}
+
+.main{flex:1;display:flex;overflow:hidden}
+.sidebar{width:220px;background:var(--s1);border-right:1px solid var(--b1);padding:16px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:4px}
+.sb-label{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--t4);padding:8px 8px 4px;font-weight:700}
+.sb-item{padding:8px 10px;border-radius:6px;font-size:12.5px;color:var(--t2);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.sb-item:hover{background:var(--s3);color:var(--t1)}
+.sb-item.on{background:var(--gd);color:var(--green);border:1px solid #00e87b22}
+.sb-item .sb-icon{font-size:14px}
+.sb-item .sb-badge{margin-left:auto;font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:3px;background:var(--s3);color:var(--t4)}
+
+.content{flex:1;overflow-y:auto;padding:0}
+
+/* ── SCREENS ── */
+.screen{display:none;padding:28px 32px;animation:fadeIn .3s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LOGIN SCREEN (fullscreen overlay) ── */
+.login-overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+.login-overlay.hidden{display:none}
+.login-card{background:var(--s2);border:1px solid var(--b1);border-radius:16px;padding:36px 32px;text-align:center;max-width:380px;width:90%}
+.login-card h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.login-card .sub{font-size:12px;color:var(--t3);margin-bottom:24px}
+.fs-ring{width:80px;height:80px;margin:0 auto 16px;border:2.5px dashed var(--gm);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;animation:pulse-ring 3s ease-in-out infinite}
+@keyframes pulse-ring{0%,100%{border-color:var(--gm);transform:scale(1)}50%{border-color:var(--gb);transform:scale(1.03)}}
+.fs-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--green);margin-bottom:20px}
+.fs-badge .fs-ico{width:18px;height:18px;background:var(--green);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px}
+.login-card p{font-size:12px;color:var(--t3);line-height:1.6;margin-bottom:20px}
+.login-card .login-info{font-size:10.5px;color:var(--t4);margin-top:12px}
+
+/* Scanning animation */
+.scanning .fs-ring{border-style:solid;border-color:var(--green);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scanning .scan-label{color:var(--green);font-size:11px;font-family:var(--mono)}
+
+/* ── BTN ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.02em;text-decoration:none;border-radius:6px;cursor:pointer;border:none;transition:all .2s;white-space:nowrap}
+.bp{background:var(--green);color:var(--bg)}.bp:hover{background:#33ff9e}
+.bs{background:transparent;color:var(--t1);border:1px solid var(--b1)}.bs:hover{background:var(--s3)}
+.bo{background:var(--od);color:var(--orange);border:1px solid var(--orange)}.bo:hover{background:var(--om)}
+.btn-sm{padding:6px 12px;font-size:10px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── SERVICE GRID ── */
+.s-header{margin-bottom:24px}
+.s-header h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.s-header p{font-size:13px;color:var(--t2)}
+.filter-row{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{font-family:var(--mono);font-size:9.5px;padding:5px 11px;border-radius:5px;border:1px solid var(--b1);background:var(--s2);color:var(--t3);cursor:pointer;transition:all .15s;letter-spacing:.03em}
+.filter-btn.on{background:var(--gd);color:var(--green);border-color:#00e87b44}
+.filter-btn:hover{border-color:var(--b2);color:var(--t1)}
+
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.svc-card{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:18px 16px;transition:all .2s;cursor:pointer;position:relative}
+.svc-card:hover{border-color:var(--b2);background:var(--s3)}
+.svc-card.used{border-color:#00e87b33}
+.svc-card.used::after{content:'✓ Used';position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:8px;color:var(--green);background:var(--gd);padding:2px 6px;border-radius:3px;border:1px solid #00e87b33}
+.svc-card .svc-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.svc-card .svc-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.svc-card .svc-name{font-size:13px;font-weight:600}
+.svc-card .svc-desc{font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:10px}
+.svc-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.stag{font-family:var(--mono);font-size:8px;padding:2px 6px;border-radius:3px;letter-spacing:.05em;font-weight:600}
+.stag-pop{background:var(--gd);color:var(--green);border:1px solid #00e87b33}
+.stag-kyc{background:var(--bd);color:var(--blue);border:1px solid #4d90ff33}
+.stag-uniq{background:var(--yd);color:var(--yellow);border:1px solid #ffd84d33}
+.svc-price{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--t1)}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:150;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.on{display:flex}
+.modal{background:var(--s2);border:1px solid var(--b1);border-radius:14px;max-width:500px;width:92%;max-height:85vh;overflow-y:auto;position:relative}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:2px 6px}
+.modal-body{padding:20px}
+
+/* ── FLOW STEPS (inside modal) ── */
+.flow-stepper{display:flex;gap:0;margin-bottom:20px;padding:8px 10px;background:var(--s3);border-radius:99px}
+.fstep{display:flex;align-items:center;gap:4px;padding:3px 8px;font-family:var(--mono);font-size:8px;color:var(--t4);letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.fstep.active{color:var(--green)}.fstep.done{color:var(--t3)}
+.fdot{width:4px;height:4px;border-radius:50%;background:currentColor;transition:all .2s}
+.fstep.active .fdot{background:var(--green);box-shadow:0 0 5px var(--gm)}
+
+.flow-card{background:var(--s3);border:1px solid var(--b1);border-radius:8px;padding:16px;margin-bottom:14px}
+.flow-card h4{font-size:12.5px;font-weight:600;margin-bottom:6px}
+.flow-card p{font-size:11.5px;color:var(--t2);line-height:1.6}
+
+.flow-result{background:var(--gd);border:1px solid #00e87b33;border-radius:8px;padding:14px;margin-bottom:14px}
+.flow-result h4{font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px}
+.flow-result p{font-size:11px;color:var(--t2);line-height:1.6}
+
+/* ── TERMINAL ── */
+.term-wrap{background:var(--bg);border:1px solid var(--b1);border-radius:8px;overflow:hidden;margin:12px 0}
+.term-bar{padding:6px 10px;background:var(--s2);border-bottom:1px solid var(--b1);font-family:var(--mono);font-size:9px;color:var(--t4);display:flex;justify-content:space-between;align-items:center}
+.term-out{padding:10px 14px;font-family:var(--mono);font-size:10.5px;line-height:1.9;color:var(--t2);overflow-x:auto;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto}
+.rq{color:var(--blue)}.rs{color:var(--orange)}.ok{color:var(--green)}.dm{color:var(--t4)}.py{color:var(--purple)}.ic{color:var(--green)}.rd{color:var(--red)}.yl{color:var(--yellow)}
+
+/* ── CREDENTIALS PAGE ── */
+.cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:16px}
+.cred-card{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:16px}
+.cred-card .cred-type{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.cred-card .cred-issuer{font-size:12px;color:var(--t2);margin-bottom:8px}
+.cred-card .cred-meta{font-family:var(--mono);font-size:9.5px;color:var(--t4);line-height:1.7}
+
+/* ── DELEGATION PAGE ── */
+.deleg-card{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:20px;margin-bottom:12px}
+.deleg-card h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.deleg-card p{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:12px}
+.deleg-card code{font-family:var(--mono);font-size:10px;background:var(--s3);padding:1px 5px;border-radius:3px;border:1px solid var(--b1);color:var(--green)}
+
+/* ── ACTIVITY LOG ── */
+.log-table{width:100%;border-collapse:collapse;margin-top:16px}
+.log-table th{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t4);padding:8px 10px;text-align:left;border-bottom:1px solid var(--b1);font-weight:700}
+.log-table td{font-size:11.5px;padding:10px;border-bottom:1px solid var(--b1);color:var(--t2);vertical-align:middle}
+.log-table .log-tag{font-family:var(--mono);font-size:8.5px;padding:2px 6px;border-radius:3px;font-weight:600}
+
+/* ── ADD SERVICE PAGE ── */
+.add-form{max-width:480px}
+.add-form label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;margin-top:14px;font-weight:600}
+.add-form input,.add-form select{width:100%;padding:9px 12px;background:var(--s3);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-family:var(--mono);font-size:11.5px;outline:none;transition:border-color .2s}
+.add-form input:focus,.add-form select:focus{border-color:var(--green)}
+.add-form select{appearance:none;cursor:pointer}
+
+/* ── RESPONSIVE ── */
+@media(max-width:800px){.sidebar{display:none}.svc-grid{grid-template-columns:1fr}}
+
+/* ── EXAMPLE DISCLAIMER ── */
+.disclaimer{background:var(--s3);border:1px solid var(--b1);border-radius:6px;padding:10px 14px;font-size:10.5px;color:var(--t3);line-height:1.6;margin-bottom:20px;display:flex;align-items:flex-start;gap:8px}
+.disclaimer .disc-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ LOGIN OVERLAY ════════════════ -->
+<div class="login-overlay" id="login-overlay">
+  <div style="font-family:var(--mono);font-size:10px;color:var(--t4);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px">idOS Trusted Agents</div>
+  <div class="login-card" id="login-card">
+    <h2>Welcome</h2>
+    <div class="sub">Sign in with idOS FaceSign to access the marketplace</div>
+    <div class="fs-ring" id="fs-ring">🙂</div>
+    <div class="fs-badge"><div class="fs-ico">😊</div> idOS FaceSign</div>
+    <p>Scan your face to authenticate. FaceSign derives your encryption keys from biometric liveness — no passwords, no seed phrases.</p>
+    <button class="btn bp" style="width:100%;justify-content:center" id="login-btn" onclick="startLogin()">Sign in with FaceSign →</button>
+    <div class="login-info">Your biometric data never leaves your device's secure enclave.</div>
+  </div>
+</div>
+
+<!-- ════════════════ MAIN APP ════════════════ -->
+<div class="app" id="app" style="display:none">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="index.html" class="logo" style="text-decoration:none"><span class="dot"></span>idOS Trusted Agents</a>
+    <a href="index.html" style="font-family:var(--mono);font-size:9.5px;color:var(--t3);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--t3)'">← Product Brief</a>
+    <div class="sep"></div>
+    <div class="cred-pills" id="cred-pills">
+      <span class="cp cp-none" id="pill-pop" title="No Proof of Personhood credential">PoP: —</span>
+      <span class="cp cp-none" id="pill-kyc" title="No KYC credential">KYC: —</span>
+    </div>
+    <div class="user-pill"><div class="avatar">😊</div>0xde...beef</div>
+  </div>
+
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-label">Marketplace</div>
+      <div class="sb-item on" onclick="nav('catalog')" id="nav-catalog"><span class="sb-icon">📡</span>Service Catalog<span class="sb-badge" id="svc-count">6</span></div>
+      <div class="sb-item" onclick="nav('activity')" id="nav-activity"><span class="sb-icon">📋</span>Activity Log<span class="sb-badge" id="log-count">0</span></div>
+
+      <div class="sb-label">Identity</div>
+      <div class="sb-item" onclick="nav('credentials')" id="nav-credentials"><span class="sb-icon">🪪</span>My Credentials<span class="sb-badge" id="cred-count">0</span></div>
+      <div class="sb-item" onclick="nav('delegation')" id="nav-delegation"><span class="sb-icon">🤖</span>Agent Delegation</div>
+
+      <div class="sb-label">Advanced</div>
+      <div class="sb-item" onclick="nav('add-service')" id="nav-add-service"><span class="sb-icon">➕</span>Add Service</div>
+      <div class="sb-item" onclick="nav('terminal')" id="nav-terminal"><span class="sb-icon">💻</span>Agent Terminal</div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content">
+
+      <!-- ══ CATALOG ══ -->
+      <div class="screen on" id="screen-catalog">
+        <div class="s-header">
+          <h2>Service Catalog</h2>
+          <p>Browse identity-gated APIs. Pay with USDC via x402. Your credentials are reused automatically.</p>
+        </div>
+        <div class="disclaimer">
+          <span class="disc-icon">ℹ️</span>
+          <span>These are <strong>example scenarios</strong> illustrating how different API providers could implement identity gates. Service names and providers shown are hypothetical and for demonstration purposes only.</span>
+        </div>
+        <div class="filter-row">
+          <div class="filter-btn on" onclick="filter('all',this)">All</div>
+          <div class="filter-btn" onclick="filter('pop',this)">Proof of Personhood</div>
+          <div class="filter-btn" onclick="filter('kyc',this)">KYC Required</div>
+          <div class="filter-btn" onclick="filter('uniq',this)">Uniqueness</div>
+        </div>
+        <div class="svc-grid" id="svc-grid"></div>
+      </div>
+
+      <!-- ══ ACTIVITY ══ -->
+      <div class="screen" id="screen-activity">
+        <div class="s-header">
+          <h2>Activity Log</h2>
+          <p>Every API call, payment, and credential check — transparent and auditable.</p>
+        </div>
+        <table class="log-table">
+          <thead><tr><th>Time</th><th>Service</th><th>Gate</th><th>Cost</th><th>Status</th></tr></thead>
+          <tbody id="log-body"></tbody>
+        </table>
+        <div id="log-empty" style="text-align:center;padding:40px;color:var(--t4);font-size:13px">No activity yet. Use a service to see logs here.</div>
+      </div>
+
+      <!-- ══ CREDENTIALS ══ -->
+      <div class="screen" id="screen-credentials">
+        <div class="s-header">
+          <h2>My Credentials</h2>
+          <p>Encrypted, portable credentials stored on the idOS Network. Only you can decrypt them.</p>
+        </div>
+        <div class="cred-grid" id="cred-grid">
+          <div id="cred-empty" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t4);font-size:13px">No credentials yet. Use a PoP or KYC service to earn credentials.</div>
+        </div>
+      </div>
+
+      <!-- ══ DELEGATION ══ -->
+      <div class="screen" id="screen-delegation">
+        <div class="s-header">
+          <h2>Agent Delegation</h2>
+          <p>Allow your AI agent to create scoped access grants on your behalf — so it can call identity-gated APIs autonomously.</p>
+        </div>
+        <div class="deleg-card">
+          <h4>🤖 Smart Account Signer Delegation</h4>
+          <p>To enable your agent to call identity-gated APIs without your manual approval each time, you can delegate idOS signing authority to a smart account (e.g. ERC-4337). The agent gets a scoped session key that can only create time-limited dAGs — never decrypt your data or transfer funds.</p>
+          <div class="flow-card" style="margin:0">
+            <h4>How it works</h4>
+            <p style="font-size:11px;color:var(--t3);line-height:1.8">
+              <strong style="color:var(--t1)">1.</strong> You deploy or connect an ERC-4337 smart account<br>
+              <strong style="color:var(--t1)">2.</strong> You sign a <code>delegateAGSigning</code> transaction scoping: which credential types, which APIs, max TTL per dAG, and a session expiry<br>
+              <strong style="color:var(--t1)">3.</strong> Your agent receives a session key that can call <code>idOS.createDelegatedAG()</code> for approved scopes<br>
+              <strong style="color:var(--t1)">4.</strong> Each dAG is scoped, time-limited, and logged to this dashboard<br>
+              <strong style="color:var(--t1)">5.</strong> You can revoke all delegation instantly from here
+            </p>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn bp btn-sm" id="deleg-btn" onclick="enableDelegation()">Enable Agent Delegation</button>
+            <button class="btn bs btn-sm" disabled id="revoke-btn" onclick="revokeDelegation()">Revoke All</button>
+          </div>
+          <div id="deleg-status" style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--t4)"></div>
+        </div>
+
+        <div class="deleg-card">
+          <h4>📋 Delegation Scope</h4>
+          <p>Current agent permissions for autonomous dAG creation:</p>
+          <div class="term-wrap">
+            <div class="term-bar">Agent session config</div>
+            <div class="term-out" id="deleg-config"><span class="dm">// No active delegation
+// Enable above to configure</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ADD SERVICE ══ -->
+      <div class="screen" id="screen-add-service">
+        <div class="s-header">
+          <h2>Add Service Manually</h2>
+          <p>Register a custom API endpoint that accepts x402 payments and idOS identity verification.</p>
+        </div>
+        <div class="add-form">
+          <label>Service Name</label>
+          <input type="text" id="add-name" placeholder="e.g. My Compliance API">
+          <label>Endpoint URL</label>
+          <input type="text" id="add-url" placeholder="e.g. https://api.example.com/v1/check">
+          <label>Identity Gate</label>
+          <select id="add-gate">
+            <option value="pop">Proof of Personhood (PoP)</option>
+            <option value="uniq">Uniqueness (1 account per human)</option>
+            <option value="kyc">KYC — credential hash only (no AG)</option>
+            <option value="kyc-ag">KYC — with AG for re-verification</option>
+          </select>
+          <label>Price per Call (USDC)</label>
+          <input type="text" id="add-price" placeholder="e.g. 0.25">
+          <label>Description</label>
+          <input type="text" id="add-desc" placeholder="What does this API do?">
+          <div style="margin-top:18px">
+            <button class="btn bp" onclick="addCustomService()">Register Service →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ AGENT TERMINAL ══ -->
+      <div class="screen" id="screen-terminal">
+        <div class="s-header">
+          <h2>Agent Terminal</h2>
+          <p>Simulate your AI agent calling identity-gated APIs autonomously using delegated credentials. This is what happens behind the scenes — no UI, no modals, pure HTTP.</p>
+        </div>
+        <div id="term-svc-select" style="margin-bottom:14px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--t4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Select a service to call as your agent:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap" id="term-svc-btns"></div>
+        </div>
+        <div class="term-wrap" style="min-height:240px">
+          <div class="term-bar"><span>agent@trusted-agents:~$</span><span style="font-size:8px;color:var(--green)" id="term-deleg-status"></span></div>
+          <div class="term-out" id="term-output"><span class="dm">// Agent terminal ready
+// Select a service above to simulate an autonomous API call
+// Your agent uses delegated session keys to create dAGs</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SERVICE USE MODAL ════════════════ -->
+<div class="modal-overlay" id="svc-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Using Service</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const S = {
+  loggedIn: false,
+  hasPoP: false,
+  hasKYC: false,
+  hasDelegation: false,
+  usedServices: new Set(),
+  logs: [],
+  customServices: [],
+  credentials: []
+};
+
+// ══════════════════════════════════════════
+// SERVICES DATA
+// ══════════════════════════════════════════
+const SERVICES = [
+  {id:'pop-captcha', name:'Human Verification Gateway', icon:'👤', desc:'Anti-Sybil check for dApps. Proves a unique human is behind the request — no bots, no duplicates.', gate:'pop', price:'0.01', color:'green', category:'Identity'},
+  {id:'pop-ai', name:'AI Inference Endpoint', icon:'🧠', desc:'Rate-limited LLM inference API. PoP prevents bot abuse while keeping access open to verified humans.', gate:'pop', price:'0.08', color:'purple', category:'AI / ML'},
+  {id:'kyc-compliance', name:'Compliance Report API', icon:'🔍', desc:'On-chain risk scoring and compliance checks on wallet addresses. Sanctions, PEP screening, jurisdiction analysis.', gate:'kyc', price:'0.50', color:'blue', category:'Compliance'},
+  {id:'kyc-credit', name:'DeFi Credit Score', icon:'📊', desc:'On-chain credit scoring for DeFi lending protocols. Combines repayment history, collateral ratios, and protocol diversity.', gate:'kyc', price:'2.00', color:'blue', category:'Finance'},
+  {id:'uniq-airdrop', name:'Sybil-Resistant Airdrop', icon:'🎯', desc:'Token distribution that enforces one claim per verified human. Uniqueness check via idOS.', gate:'uniq', price:'0.00', color:'yellow', category:'Distribution'},
+  {id:'kyc-fiat', name:'Fiat On/Off-Ramp', icon:'💱', desc:'Stablecoin-to-fiat conversion with regulatory compliance. Requires KYC with AG for re-verification by the provider.', gate:'kyc-ag', price:'0.25', color:'orange', category:'Payments'},
+];
+
+// ══════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════
+function startLogin() {
+  const card = document.getElementById('login-card');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = 'Scanning...';
+  card.classList.add('scanning');
+
+  const ring = document.getElementById('fs-ring');
+  ring.innerHTML = '<span class="scan-label">Scanning</span>';
+
+  setTimeout(() => {
+    ring.innerHTML = '✓';
+    ring.style.borderStyle = 'solid';
+    ring.style.borderColor = 'var(--green)';
+    ring.style.animation = 'none';
+    ring.style.color = 'var(--green)';
+    ring.style.fontSize = '28px';
+    card.classList.remove('scanning');
+    btn.textContent = '✓ Authenticated';
+    btn.style.background = 'var(--green)';
+
+    setTimeout(() => {
+      document.getElementById('login-overlay').classList.add('hidden');
+      document.getElementById('app').style.display = 'flex';
+      S.loggedIn = true;
+      renderCatalog();
+    }, 600);
+  }, 1800);
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function nav(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('screen-'+screen).classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('on'));
+  const navEl = document.getElementById('nav-'+screen);
+  if (navEl) navEl.classList.add('on');
+
+  if (screen === 'terminal') renderTerminalBtns();
+  if (screen === 'credentials') renderCredentials();
+  if (screen === 'activity') renderLogs();
+}
+
+// ══════════════════════════════════════════
+// CATALOG
+// ══════════════════════════════════════════
+function renderCatalog(filterType) {
+  const grid = document.getElementById('svc-grid');
+  const all = [...SERVICES, ...S.customServices];
+  const filtered = !filterType || filterType === 'all' ? all : all.filter(s => {
+    if (filterType === 'pop') return s.gate === 'pop';
+    if (filterType === 'kyc') return s.gate === 'kyc' || s.gate === 'kyc-ag';
+    if (filterType === 'uniq') return s.gate === 'uniq';
+    return true;
+  });
+
+  grid.innerHTML = filtered.map(s => {
+    const used = S.usedServices.has(s.id);
+    const gateLabel = {pop:'PoP', kyc:'KYC', 'kyc-ag':'KYC + AG', uniq:'Unique'}[s.gate] || s.gate;
+    const gateClass = {pop:'stag-pop', kyc:'stag-kyc', 'kyc-ag':'stag-kyc', uniq:'stag-uniq'}[s.gate] || 'stag-pop';
+    const bgColor = {green:'var(--gd)',blue:'var(--bd)',purple:'var(--pd)',orange:'var(--od)',yellow:'var(--yd)'}[s.color] || 'var(--gd)';
+    return `<div class="svc-card ${used?'used':''}" onclick="useService('${s.id}')">
+      <div class="svc-top">
+        <div class="svc-icon" style="background:${bgColor};border:1px solid var(--b1)">${s.icon}</div>
+        <div><div class="svc-name">${s.name}</div><div style="font-family:var(--mono);font-size:9px;color:var(--t4);margin-top:2px">${s.category||'API'}</div></div>
+      </div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-tags">
+        <span class="stag ${gateClass}">${gateLabel}</span>
+        <span class="svc-price">${parseFloat(s.price)===0?'Free':'$'+s.price}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('svc-count').textContent = all.length;
+}
+
+function filter(type, el) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  renderCatalog(type);
+}
+
+// ══════════════════════════════════════════
+// USE SERVICE FLOW
+// ══════════════════════════════════════════
+function useService(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  if (!svc) return;
+
+  document.getElementById('modal-title').textContent = svc.name;
+  const body = document.getElementById('modal-body');
+
+  // Check what gates are needed
+  const needsPoP = svc.gate === 'pop' || svc.gate === 'uniq';
+  const needsKYC = svc.gate === 'kyc' || svc.gate === 'kyc-ag';
+  const needsAG = svc.gate === 'kyc-ag';
+
+  // If already used
+  if (S.usedServices.has(id)) {
+    body.innerHTML = `
+      <div class="flow-result"><h4>✓ Already used</h4><p>You've already called this service. Your credential was reused automatically — no re-verification needed.</p></div>
+      <button class="btn bp" style="width:100%;justify-content:center" onclick="rerunService('${id}')">Call Again ($${svc.price} USDC) →</button>
+    `;
+    openModal(); return;
+  }
+
+  // PoP flow
+  if (needsPoP && !S.hasPoP) {
+    body.innerHTML = buildPoPFlow(svc);
+    openModal(); return;
+  }
+
+  // KYC flow
+  if (needsKYC && !S.hasKYC) {
+    body.innerHTML = buildKYCFlow(svc);
+    openModal(); return;
+  }
+
+  // Already have credentials — instant use
+  body.innerHTML = buildInstantFlow(svc);
+  openModal();
+}
+
+function buildPoPFlow(svc) {
+  return `
+    <div class="flow-stepper">
+      <div class="fstep active"><span class="fdot"></span>Identity</div>
+      <div class="fstep"><span class="fdot"></span>Payment</div>
+      <div class="fstep"><span class="fdot"></span>Result</div>
+    </div>
+    <div class="flow-card">
+      <h4>🔐 Proof of Personhood Required</h4>
+      <p>This service requires PoP to verify you're a real human. Since you logged in with FaceSign, your liveness proof can be written as a PoP credential to idOS.</p>
+    </div>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:14px"><strong style="color:var(--t1)">Identity check runs first</strong> — payment only settles after your credential is verified. No risk of paying for a service you can't access.</p>
+    <button class="btn bp" style="width:100%;justify-content:center" onclick="completePoPFlow('${svc.id}')">Write PoP Credential to idOS + Pay $${svc.price} →</button>
+  `;
+}
+
+function buildKYCFlow(svc) {
+  const hasPoP = S.hasPoP;
+  return `
+    <div class="flow-stepper">
+      ${hasPoP ? '<div class="fstep done"><span class="fdot"></span>PoP</div>' : ''}
+      <div class="fstep active"><span class="fdot"></span>KYC</div>
+      <div class="fstep"><span class="fdot"></span>Payment</div>
+      <div class="fstep"><span class="fdot"></span>Result</div>
+    </div>
+    <div class="flow-card">
+      <h4>🪪 KYC Verification Required</h4>
+      <p>This service requires a verified KYC credential. You'll complete identity verification through <strong>idOS Relay</strong>, which orchestrates the KYC check${svc.gate==='kyc-ag'?' and creates an access grant for provider re-verification':''}.</p>
+    </div>
+    <div class="flow-card">
+      <h4>How it works (abbreviated)</h4>
+      <p style="font-size:11px;color:var(--t3);line-height:1.8">
+        <span style="color:var(--green)">1.</span> idOS Relay routes to a KYC provider (e.g. Sumsub)<br>
+        <span style="color:var(--green)">2.</span> You submit ID document + video selfie + liveness<br>
+        <span style="color:var(--green)">3.</span> Provider returns APPROVED/REJECTED<br>
+        <span style="color:var(--green)">4.</span> Relay issues encrypted W3C VC to your idOS profile<br>
+        <span style="color:var(--green)">5.</span> Provider deletes all PII immediately<br>
+        <span style="color:var(--green)">6.</span> Relay revokes its own access grant + purges data in 14 days
+        ${svc.gate==='kyc-ag'?'<br><span style="color:var(--orange)">7.</span> A scoped AG is created for the API provider to re-verify' : ''}
+      </p>
+    </div>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:14px"><strong style="color:var(--t1)">Identity verified before payment</strong> — USDC only settles after your KYC credential is confirmed.</p>
+    <button class="btn bp" style="width:100%;justify-content:center" onclick="completeKYCFlow('${svc.id}')">Complete KYC + Pay $${svc.price} →</button>
+  `;
+}
+
+function buildInstantFlow(svc) {
+  const credType = (svc.gate==='kyc'||svc.gate==='kyc-ag') ? 'KYC' : 'PoP';
+  return `
+    <div class="flow-result">
+      <h4>⚡ Credential Reused — No Re-verification</h4>
+      <p>Your existing <strong>${credType}</strong> credential satisfies this service's requirements. A new time-limited dAG will be created, scoped to this API. Identity is checked first, then payment settles.</p>
+    </div>
+    <div class="flow-card">
+      <h4>What happens</h4>
+      <p style="font-size:11px;color:var(--t3);line-height:1.8">
+        <span style="color:var(--green)">1.</span> Agent presents dAG + credential hash to API server<br>
+        <span style="color:var(--green)">2.</span> Server verifies credential via idOS (hash only, no PII)<br>
+        <span style="color:var(--green)">3.</span> Identity confirmed → x402 payment settles ($${svc.price} USDC)<br>
+        <span style="color:var(--green)">4.</span> Resource served. dAG auto-expires.
+      </p>
+    </div>
+    <button class="btn bp" style="width:100%;justify-content:center" onclick="completeInstantFlow('${svc.id}')">Verify + Pay $${svc.price} →</button>
+  `;
+}
+
+// ══════════════════════════════════════════
+// FLOW COMPLETIONS
+// ══════════════════════════════════════════
+function completePoPFlow(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  S.hasPoP = true;
+  S.credentials.push({type:'PoP', level:'Liveness Verified', issuer:'idOS FaceSign', issued:new Date().toISOString(), hash:'0x7a3f...e81c'});
+  updatePills();
+  finishService(svc, 'PoP written to idOS ✓');
+}
+
+function completeKYCFlow(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  const body = document.getElementById('modal-body');
+
+  // Show abbreviated KYC progress
+  body.innerHTML = `
+    <div class="flow-stepper">
+      <div class="fstep done"><span class="fdot"></span>Route</div>
+      <div class="fstep active"><span class="fdot"></span>Verify</div>
+      <div class="fstep"><span class="fdot"></span>Issue</div>
+      <div class="fstep"><span class="fdot"></span>Done</div>
+    </div>
+    <div class="term-wrap"><div class="term-bar">idOS Relay → KYC Provider</div><div class="term-out"><span class="rs">relay</span>.routeToProvider(<span class="py">"sumsub"</span>) <span class="ok">✓</span>
+<span class="dm">// User completing ID verification...</span>
+<span class="py">provider</span>.submitDoc(<span class="rq">"passport"</span>) <span class="ok">✓</span>
+<span class="py">provider</span>.livenessCheck() <span class="dm">processing...</span></div></div>
+    <div style="text-align:center;padding:10px;font-size:11px;color:var(--t3)">Simulating KYC verification...</div>
+  `;
+
+  setTimeout(() => {
+    body.querySelector('.term-out').innerHTML += `\n<span class="py">provider</span>.livenessCheck() <span class="ok">✓ PASSED</span>
+
+<span class="dm">// Issue credential</span>
+<span class="ic">relay</span>.issueCredential({
+  type: <span class="py">"KYC/basic"</span>,
+  includes_pop: <span class="ok">true</span>,
+  issuer: <span class="ic">"idOS Relay"</span>
+}) → <span class="ok">✓ stored on idOS</span>
+
+<span class="dm">// Data deletion</span>
+<span class="rd">provider.deletePII()</span> <span class="ok">✓ immediate</span>
+<span class="rd">relay.revokeOwnAG()</span> <span class="ok">✓ revoked</span>`;
+
+    body.querySelector('.fstep.active').classList.remove('active');
+    body.querySelector('.fstep.active') || body.querySelectorAll('.fstep').forEach((f,i) => {if(i===2) f.classList.add('active'); if(i<2) f.classList.add('done');});
+
+    if (!S.hasPoP) {
+      S.hasPoP = true;
+      S.credentials.push({type:'PoP', level:'Liveness Verified', issuer:'idOS FaceSign', issued:new Date().toISOString(), hash:'0x7a3f...e81c'});
+    }
+    S.hasKYC = true;
+    S.credentials.push({type:'KYC', level:'Basic (ID + Liveness)', issuer:'idOS Relay', issued:new Date().toISOString(), hash:'0xb2d1...4f9a'});
+    updatePills();
+
+    setTimeout(() => {
+      finishService(svc, 'KYC credential issued ✓');
+    }, 800);
+  }, 2200);
+}
+
+function completeInstantFlow(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  finishService(svc, 'Credential reused ⚡');
+}
+
+function rerunService(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  finishService(svc, 'Re-called (credential reused ⚡)');
+}
+
+function finishService(svc, note) {
+  S.usedServices.add(svc.id);
+  S.logs.unshift({
+    time: new Date().toLocaleTimeString(),
+    service: svc.name,
+    gate: svc.gate.toUpperCase(),
+    cost: '$'+svc.price,
+    status: 'success',
+    note: note
+  });
+
+  const body = document.getElementById('modal-body');
+  body.innerHTML = `
+    <div class="flow-result">
+      <h4>✓ Complete</h4>
+      <p><strong>${svc.name}</strong> — ${note}<br>Payment: $${svc.price} USDC settled on Base<br>dAG: created → auto-revoked after use</p>
+    </div>
+    <button class="btn bs" style="width:100%;justify-content:center" onclick="closeModal()">Done</button>
+  `;
+
+  document.getElementById('log-count').textContent = S.logs.length;
+  renderCatalog();
+}
+
+// ══════════════════════════════════════════
+// UI UPDATES
+// ══════════════════════════════════════════
+function updatePills() {
+  document.getElementById('pill-pop').className = S.hasPoP ? 'cp cp-pop' : 'cp cp-none';
+  document.getElementById('pill-pop').textContent = S.hasPoP ? 'PoP ✓' : 'PoP: —';
+  document.getElementById('pill-kyc').className = S.hasKYC ? 'cp cp-kyc' : 'cp cp-none';
+  document.getElementById('pill-kyc').textContent = S.hasKYC ? 'KYC ✓' : 'KYC: —';
+  document.getElementById('cred-count').textContent = S.credentials.length;
+}
+
+function renderCredentials() {
+  const grid = document.getElementById('cred-grid');
+  if (!S.credentials.length) { grid.innerHTML = '<div id="cred-empty" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t4);font-size:13px">No credentials yet.</div>'; return; }
+  grid.innerHTML = S.credentials.map(c => `
+    <div class="cred-card">
+      <div class="cred-type" style="color:${c.type==='KYC'?'var(--blue)':'var(--green)'}">${c.type}</div>
+      <div class="cred-issuer">Issued by: ${c.issuer}</div>
+      <div class="cred-meta">Level: ${c.level}<br>Hash: ${c.hash}<br>Issued: ${new Date(c.issued).toLocaleString()}<br>Storage: Encrypted on idOS Network<br>Access: User-only (no active AGs)</div>
+    </div>
+  `).join('');
+}
+
+function renderLogs() {
+  const tbody = document.getElementById('log-body');
+  const empty = document.getElementById('log-empty');
+  if (!S.logs.length) { empty.style.display = 'block'; tbody.innerHTML = ''; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = S.logs.map(l => {
+    const gateClass = {POP:'stag-pop',KYC:'stag-kyc','KYC-AG':'stag-kyc',UNIQ:'stag-uniq'}[l.gate] || 'stag-pop';
+    return `<tr>
+      <td style="font-family:var(--mono);font-size:10px;color:var(--t4)">${l.time}</td>
+      <td style="font-weight:600;color:var(--t1)">${l.service}</td>
+      <td><span class="log-tag ${gateClass}">${l.gate}</span></td>
+      <td style="font-family:var(--mono);font-weight:600">${l.cost}</td>
+      <td style="color:var(--green)">✓ ${l.note}</td>
+    </tr>`;
+  }).join('');
+}
+
+function openModal() { document.getElementById('svc-modal').classList.add('on'); }
+function closeModal() { document.getElementById('svc-modal').classList.remove('on'); }
+
+// ══════════════════════════════════════════
+// ADD CUSTOM SERVICE
+// ══════════════════════════════════════════
+function addCustomService() {
+  const name = document.getElementById('add-name').value.trim();
+  const url = document.getElementById('add-url').value.trim();
+  const gate = document.getElementById('add-gate').value;
+  const price = document.getElementById('add-price').value.trim() || '0.00';
+  const desc = document.getElementById('add-desc').value.trim() || 'Custom registered service';
+  if (!name) { alert('Service name is required'); return; }
+
+  const svc = {
+    id: 'custom-' + Date.now(),
+    name, icon:'🔌', desc, gate, price,
+    color: gate.includes('kyc') ? 'blue' : gate === 'uniq' ? 'yellow' : 'green',
+    category: 'Custom'
+  };
+  S.customServices.push(svc);
+  renderCatalog();
+
+  // Clear form
+  ['add-name','add-url','add-price','add-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('add-gate').selectedIndex = 0;
+
+  // Switch to catalog
+  nav('catalog');
+}
+
+// ══════════════════════════════════════════
+// DELEGATION
+// ══════════════════════════════════════════
+function enableDelegation() {
+  S.hasDelegation = true;
+  document.getElementById('deleg-btn').disabled = true;
+  document.getElementById('deleg-btn').textContent = '✓ Delegation Active';
+  document.getElementById('revoke-btn').disabled = false;
+  document.getElementById('deleg-status').innerHTML = '<span style="color:var(--green)">✓ Agent delegation enabled. Session key issued.</span>';
+  document.getElementById('deleg-config').innerHTML = `{
+  <span class="ic">sessionKey</span>: <span class="py">"0x9f2a...c3d1"</span>,
+  <span class="ic">smartAccount</span>: <span class="py">"0x4337...erc4337"</span>,
+  <span class="ic">permissions</span>: {
+    <span class="rq">createDAG</span>: <span class="ok">true</span>,
+    <span class="rq">scopedTo</span>: [<span class="py">"pop"</span>, <span class="py">"kyc"</span>],
+    <span class="rq">maxTTL</span>: <span class="py">"120s"</span>,
+    <span class="rq">decryptData</span>: <span class="rd">false</span>,
+    <span class="rq">transferFunds</span>: <span class="rd">false</span>,
+    <span class="rq">revokeCredentials</span>: <span class="rd">false</span>
+  },
+  <span class="ic">expires</span>: <span class="py">"${new Date(Date.now()+86400000).toISOString()}"</span>
+}`;
+}
+
+function revokeDelegation() {
+  S.hasDelegation = false;
+  document.getElementById('deleg-btn').disabled = false;
+  document.getElementById('deleg-btn').textContent = 'Enable Agent Delegation';
+  document.getElementById('revoke-btn').disabled = true;
+  document.getElementById('deleg-status').innerHTML = '<span style="color:var(--red)">✕ All delegation revoked.</span>';
+  document.getElementById('deleg-config').innerHTML = '<span class="dm">// No active delegation</span>';
+}
+
+// ══════════════════════════════════════════
+// AGENT TERMINAL
+// ══════════════════════════════════════════
+function renderTerminalBtns() {
+  const cont = document.getElementById('term-svc-btns');
+  const all = [...SERVICES, ...S.customServices];
+  cont.innerHTML = all.map(s => {
+    const canUse = (s.gate==='pop'||s.gate==='uniq') ? S.hasPoP : S.hasKYC;
+    return `<button class="btn btn-sm ${canUse?'bp':'bs'}" ${canUse?'':'disabled'} onclick="agentCall('${s.id}')">${s.icon} ${s.name}</button>`;
+  }).join('');
+
+  const ds = document.getElementById('term-deleg-status');
+  ds.textContent = S.hasDelegation ? '● delegation active' : '○ no delegation';
+  ds.style.color = S.hasDelegation ? 'var(--green)' : 'var(--t4)';
+}
+
+function agentCall(id) {
+  const svc = [...SERVICES, ...S.customServices].find(s => s.id === id);
+  if (!svc) return;
+
+  const out = document.getElementById('term-output');
+  const gateType = svc.gate.includes('kyc') ? 'KYC' : svc.gate === 'uniq' ? 'Uniqueness' : 'PoP';
+  const delegNote = S.hasDelegation ? `<span class="ok">delegated session key</span>` : `<span class="yl">manual signing</span>`;
+
+  out.innerHTML = `<span class="dm">$ agent call ${svc.name.toLowerCase().replace(/\s/g,'-')}</span>
+
+<span class="rq">→ GET</span> ${svc.name.toLowerCase().replace(/\s/g,'-')}.api.example.com/v1/resource
+
+<span class="rs">← 402 Payment Required</span>
+  X-PAYMENT: { amount: <span class="py">"${svc.price}"</span>, asset: <span class="py">"USDC"</span>, network: <span class="py">"base"</span> }
+  X-IDENTITY: { level: <span class="ic">"${svc.gate}"</span>, provider: <span class="ic">"idOS"</span> }
+
+<span class="dm">// Step 1: Verify identity FIRST (before payment)</span>
+<span class="ic">→ idOS.createDelegatedAG</span>({
+    credential: <span class="py">"${gateType}"</span>,
+    grantee: <span class="py">"${svc.name.toLowerCase().replace(/\s/g,'-')}.api"</span>,
+    ttl: <span class="py">"60s"</span>,
+    scope: <span class="py">"read:credential_hash"</span>,
+    signer: ${delegNote}
+  })`;
+
+  setTimeout(() => {
+    out.innerHTML += `
+  → <span class="ok">✓ dAG created, identity verified</span>
+  → credential: <span class="ic">${gateType} (idOS ${gateType==='KYC'?'Relay':'FaceSign'})</span>
+  → re-verification: <span class="ok">SKIPPED (existing credential)</span>
+
+<span class="dm">// Step 2: Payment settles AFTER identity confirmed</span>
+<span class="py">→ x402.signPayment</span>({ amount: <span class="py">"${svc.price}"</span>, asset: <span class="py">"USDC"</span> })
+  → <span class="ok">✓ ${svc.price} USDC settled</span> (tx: <span class="py">0x${Math.random().toString(16).slice(2,10)}...${Math.random().toString(16).slice(2,6)}</span>)
+
+<span class="ok">← 200 OK</span>
+  X-IDOS-VERIFIED: <span class="ok">true</span>
+  X-PAYMENT-TX: <span class="py">confirmed</span>
+
+  { data: <span class="ok">"[resource served]"</span> }
+
+<span class="dm">// dAG auto-expired. No PII accessed. No re-verification.</span>
+<span class="dm">// Total: identity check + payment + response in <span class="ok">&lt;300ms</span></span>
+<span class="dm">$</span>`;
+
+    // Log it
+    S.usedServices.add(svc.id);
+    S.logs.unshift({
+      time: new Date().toLocaleTimeString(),
+      service: svc.name + ' (agent)',
+      gate: svc.gate.toUpperCase(),
+      cost: '$'+svc.price,
+      status: 'success',
+      note: 'Agent autonomous call ⚡'
+    });
+    document.getElementById('log-count').textContent = S.logs.length;
+    renderCatalog();
+    renderTerminalBtns();
+  }, 1200);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderCatalog();
+</script>
+</body>
+</html>
