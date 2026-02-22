@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAppStore } from "@/lib/store";
-import type { LogEntry, Service } from "@/lib/types";
+import type { AppMode, LogEntry, Service } from "@/lib/types";
 
 interface TermLine {
   text: string;
@@ -16,12 +16,18 @@ export default function Terminal() {
   const hasKYC = useAppStore((s) => s.hasKYC);
   const mode = useAppStore((s) => s.mode);
   const userDelegation = useAppStore((s) => s.userDelegation);
-  const devDelegation = useAppStore((s) => s.devDelegation);
+  const appDelegation = useAppStore((s) => s.appDelegation);
+  const devAgentDelegation = useAppStore((s) => s.devAgentDelegation);
   const usedServices = useAppStore((s) => s.usedServices);
   const markServiceUsed = useAppStore((s) => s.markServiceUsed);
   const addLog = useAppStore((s) => s.addLog);
 
-  const hasDelegation = mode === "user" ? userDelegation : devDelegation;
+  const delegationMap: Record<AppMode, boolean> = {
+    user: userDelegation,
+    app: appDelegation,
+    dev: devAgentDelegation,
+  };
+  const hasDelegation = delegationMap[mode];
 
   const [lines, setLines] = useState<TermLine[]>([
     { text: "# idOS Agent Terminal v1.0", color: "gray" },
@@ -176,11 +182,19 @@ export default function Terminal() {
     default: "text-t2",
   };
 
-  const terminalTitle = mode === "user" ? "Agent Terminal" : "API Test Console";
-  const terminalDesc =
-    mode === "user"
-      ? "Simulate autonomous agent calls to x402-gated services. The agent handles identity verification, credential presentation, and micropayments — all without user intervention."
-      : "Test your platform's agent fleet calls to x402-gated APIs. Agents handle identity verification, credential presentation, and micropayments on behalf of your users.";
+  const titleMap: Record<AppMode, string> = {
+    user: "Agent Terminal",
+    app: "API Test Console",
+    dev: "Agent Terminal",
+  };
+  const terminalTitle = titleMap[mode];
+
+  const descriptionMap: Record<AppMode, string> = {
+    user: "Simulate autonomous agent calls to x402-gated services. The agent handles identity verification, credential presentation, and micropayments — all without user intervention.",
+    app: "Test your platform's agent fleet calls to x402-gated APIs. Agents handle identity verification, credential presentation, and micropayments on behalf of your users.",
+    dev: "Simulate your coding agent's calls to developer lifecycle APIs. The agent handles identity verification, credential presentation, and micropayments for dev infrastructure.",
+  };
+  const terminalDesc = descriptionMap[mode];
 
   return (
     <div className="animate-fade-in space-y-6">

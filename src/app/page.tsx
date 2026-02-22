@@ -158,13 +158,15 @@ export default function Home() {
               Who It&apos;s For
             </span>
             <h2 className="mb-3 font-serif text-3xl leading-snug text-t1 md:text-4xl">
-              Two audiences. One protocol.
+              Three audiences. One protocol.
             </h2>
             <p className="text-sm leading-relaxed text-t2">
-              Trusted Agents serves both individual users with personal AI agents
-              and platform developers whose backend agents need to call identity-gated
-              APIs on behalf of their users. The identity layer is the same — the
-              delegation model differs.
+              Trusted Agents serves individual users with personal AI agents,
+              platform developers whose backend agents serve end users, and
+              developer agents — AI coding tools like Claude Code, Cursor, or
+              Devin that need identity-gated APIs during the software development
+              lifecycle. The identity layer is the same — the delegation model
+              differs.
             </p>
           </div>
 
@@ -179,7 +181,7 @@ export default function Home() {
           </div>
 
           {/* Two-column audience grid */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {/* ── Personal Agent Column ── */}
             <div className="overflow-hidden rounded-xl border border-b1 bg-s1">
               <div className="border-b border-b1 bg-green-dim px-5 py-4">
@@ -289,12 +291,12 @@ export default function Home() {
             <div className="overflow-hidden rounded-xl border border-b1 bg-s1">
               <div className="border-b border-b1 bg-blue-dim px-5 py-4">
                 <h3 className="flex items-center gap-2 text-[15px] font-bold text-t1">
-                  <span>🛠️</span> Platform Developer
+                  <span>🏗️</span> Agent Applications
                 </h3>
                 <p className="mt-1 text-[11.5px] leading-snug text-t3">
-                  &ldquo;I&apos;m building a product. My backend agents need to call
-                  identity-gated APIs on behalf of my users. My users verify once through
-                  my app — my agents handle the rest.&rdquo;
+                  &ldquo;I&apos;m building a product whose backend agents serve my end
+                  users. My users verify once through my app — my agents handle the
+                  rest.&rdquo;
                 </p>
               </div>
               <div className="divide-y divide-b1 px-5 py-4">
@@ -389,10 +391,113 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* ── Developer Agent Column ── */}
+            <div className="overflow-hidden rounded-xl border border-b1 bg-s1">
+              <div className="border-b border-b1 bg-purple-dim px-5 py-4">
+                <h3 className="flex items-center gap-2 text-[15px] font-bold text-t1">
+                  <span>🤖</span> Developer Agent
+                </h3>
+                <p className="mt-1 text-[11.5px] leading-snug text-t3">
+                  &ldquo;I use AI coding agents — Claude Code, Cursor, Devin — and
+                  they need to access identity-gated developer APIs on my behalf
+                  during the development lifecycle.&rdquo;
+                </p>
+              </div>
+              <div className="divide-y divide-b1 px-5 py-4">
+                {/* Service 1 */}
+                <div className="flex gap-2.5 py-2.5">
+                  <span className="mt-0.5 shrink-0 text-base">☁️</span>
+                  <div>
+                    <h4 className="text-xs font-semibold text-t1">Cloud Provisioning</h4>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-t3">
+                      Your coding agent provisions cloud infrastructure — environments,
+                      VPCs, resources. The cloud provider verifies your identity once
+                      via idOS.
+                    </p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="rounded-sm border border-blue/20 bg-blue-dim px-1.5 py-0.5 font-mono text-[7.5px] font-bold tracking-wide text-blue">
+                        KYC
+                      </span>
+                      <span className="ml-auto font-mono text-[9px] text-t4">$2.00</span>
+                    </div>
+                  </div>
+                </div>
+                {/* Service 2 */}
+                <div className="flex gap-2.5 py-2.5">
+                  <span className="mt-0.5 shrink-0 text-base">✍️</span>
+                  <div>
+                    <h4 className="text-xs font-semibold text-t1">Code Signing</h4>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-t3">
+                      Sign release binaries and artifacts. KYC+AG ensures signing
+                      authority is re-verifiable — critical for supply chain integrity.
+                    </p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="rounded-sm border border-orange/20 bg-orange-dim px-1.5 py-0.5 font-mono text-[7.5px] font-bold tracking-wide text-orange">
+                        KYC + AG
+                      </span>
+                      <span className="ml-auto font-mono text-[9px] text-t4">$1.50</span>
+                    </div>
+                  </div>
+                </div>
+                {/* Service 3 */}
+                <div className="flex gap-2.5 py-2.5">
+                  <span className="mt-0.5 shrink-0 text-base">📤</span>
+                  <div>
+                    <h4 className="text-xs font-semibold text-t1">Package Publishing</h4>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-t3">
+                      Publish to npm, PyPI, crates.io. Identity-gated publishing
+                      prevents supply chain attacks from compromised CI/CD pipelines.
+                    </p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="rounded-sm border border-blue/20 bg-blue-dim px-1.5 py-0.5 font-mono text-[7.5px] font-bold tracking-wide text-blue">
+                        KYC
+                      </span>
+                      <span className="ml-auto font-mono text-[9px] text-t4">$0.75</span>
+                    </div>
+                  </div>
+                </div>
+                {/* Service 4 */}
+                <div className="flex gap-2.5 py-2.5">
+                  <span className="mt-0.5 shrink-0 text-base">🛡️</span>
+                  <div>
+                    <h4 className="text-xs font-semibold text-t1">Pentest Authorization</h4>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-t3">
+                      Authorize automated penetration testing. KYC+AG ensures the
+                      tester&apos;s identity is verifiable for legal accountability.
+                    </p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="rounded-sm border border-orange/20 bg-orange-dim px-1.5 py-0.5 font-mono text-[7.5px] font-bold tracking-wide text-orange">
+                        KYC + AG
+                      </span>
+                      <span className="ml-auto font-mono text-[9px] text-t4">$50.00</span>
+                    </div>
+                  </div>
+                </div>
+                {/* Service 5 */}
+                <div className="flex gap-2.5 py-2.5">
+                  <span className="mt-0.5 shrink-0 text-base">📜</span>
+                  <div>
+                    <h4 className="text-xs font-semibold text-t1">ToS Acceptance</h4>
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-t3">
+                      Accept Terms of Service on behalf of your org. KYC+AG
+                      ensures acceptance is legally binding and the signer is
+                      re-verifiable.
+                    </p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="rounded-sm border border-orange/20 bg-orange-dim px-1.5 py-0.5 font-mono text-[7.5px] font-bold tracking-wide text-orange">
+                        KYC + AG
+                      </span>
+                      <span className="ml-auto font-mono text-[9px] text-t4">$0.10</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Delegation explanation boxes */}
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="rounded-lg border border-b1 bg-s1 p-4">
               <div className="mb-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-green">
                 Personal Agent Delegation
@@ -408,7 +513,7 @@ export default function Home() {
             </div>
             <div className="rounded-lg border border-b1 bg-s1 p-4">
               <div className="mb-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-blue">
-                Platform Fleet Delegation
+                App Fleet Delegation
               </div>
               <p className="text-[11px] leading-relaxed text-t2">
                 Platform deploys smart account → user verifies through platform&apos;s idOS
@@ -418,6 +523,20 @@ export default function Home() {
                 </code>{" "}
                 scoping credentials → platform&apos;s agent fleet creates dAGs per-user → users
                 can view/revoke from idOS dashboard.
+              </p>
+            </div>
+            <div className="rounded-lg border border-b1 bg-s1 p-4">
+              <div className="mb-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-purple">
+                Developer Agent Delegation
+              </div>
+              <p className="text-[11px] leading-relaxed text-t2">
+                Developer deploys ERC-4337 smart account → signs{" "}
+                <code className="rounded border border-b1 bg-s3 px-1 py-0.5 font-mono text-[9px] text-green">
+                  delegateDevAgent
+                </code>{" "}
+                scoping developer API permissions (infra, signing, publishing) → coding agent
+                gets session key → creates dAGs per API call → developer can revoke from
+                idOS dashboard.
               </p>
             </div>
           </div>

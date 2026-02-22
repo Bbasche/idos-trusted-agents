@@ -5,11 +5,17 @@ import type { AppMode, AppScreen } from "@/lib/types";
 import LoginOverlay from "@/components/dashboard/LoginOverlay";
 
 function getNavGroups(mode: AppMode) {
+  const labels: Record<AppMode, { group: string; catalog: string; delegation: string; terminal: string }> = {
+    user: { group: "Personal Agent", catalog: "Service Catalog", delegation: "Agent Delegation", terminal: "Agent Terminal" },
+    app: { group: "Platform", catalog: "API Integrations", delegation: "Fleet Delegation", terminal: "API Test Console" },
+    dev: { group: "Developer Agent", catalog: "Dev API Catalog", delegation: "Agent Delegation", terminal: "Agent Terminal" },
+  };
+  const l = labels[mode];
   return [
     {
-      label: mode === "user" ? "Personal Agent" : "Platform",
+      label: l.group,
       items: [
-        { screen: "catalog" as AppScreen, label: mode === "user" ? "Service Catalog" : "API Integrations", icon: "◫" },
+        { screen: "catalog" as AppScreen, label: l.catalog, icon: "◫" },
         { screen: "activity" as AppScreen, label: "Activity Log", icon: "◷" },
       ],
     },
@@ -17,14 +23,14 @@ function getNavGroups(mode: AppMode) {
       label: "Identity",
       items: [
         { screen: "credentials" as AppScreen, label: "My Credentials", icon: "⬡" },
-        { screen: "delegation" as AppScreen, label: mode === "user" ? "Agent Delegation" : "Fleet Delegation", icon: "⇌" },
+        { screen: "delegation" as AppScreen, label: l.delegation, icon: "⇌" },
       ],
     },
     {
       label: "Advanced",
       items: [
         { screen: "add-service" as AppScreen, label: "Add Service", icon: "+" },
-        { screen: "terminal" as AppScreen, label: mode === "user" ? "Agent Terminal" : "API Test Console", icon: "▸" },
+        { screen: "terminal" as AppScreen, label: l.terminal, icon: "▸" },
       ],
     },
   ];
@@ -41,9 +47,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  const displayAddress = mode === "user"
-    ? (walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : "0x000...0000")
-    : "yourapp.eth";
+  const displayAddress = mode === "app"
+    ? "yourapp.eth"
+    : (walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : "0x000...0000");
 
   const navGroups = getNavGroups(mode);
 
@@ -77,6 +83,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               👤 Personal Agent
             </button>
             <button
+              onClick={() => setMode("app")}
+              className={`font-mono text-[9px] px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                mode === "app"
+                  ? "bg-s1 text-t1 border border-b1"
+                  : "bg-transparent text-t3 border border-transparent"
+              }`}
+            >
+              🏗️ Agent Applications
+            </button>
+            <button
               onClick={() => setMode("dev")}
               className={`font-mono text-[9px] px-2.5 py-1 rounded transition-colors cursor-pointer ${
                 mode === "dev"
@@ -84,7 +100,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   : "bg-transparent text-t3 border border-transparent"
               }`}
             >
-              🛠️ Platform Developer
+              🤖 Developer Agent
             </button>
           </div>
         </div>

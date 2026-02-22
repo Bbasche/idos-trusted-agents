@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import type { AppMode, AppScreen, Credential, LogEntry, Service } from "./types";
-import { USER_SERVICES, DEV_SERVICES } from "./services";
+import { USER_SERVICES, APP_SERVICES, DEV_AGENT_SERVICES } from "./services";
 
 interface AppState {
   // Auth
@@ -18,11 +18,13 @@ interface AppState {
   hasPoP: boolean;
   hasKYC: boolean;
   userDelegation: boolean;
-  devDelegation: boolean;
+  appDelegation: boolean;
+  devAgentDelegation: boolean;
   setHasPoP: (v: boolean) => void;
   setHasKYC: (v: boolean) => void;
   setUserDelegation: (v: boolean) => void;
-  setDevDelegation: (v: boolean) => void;
+  setAppDelegation: (v: boolean) => void;
+  setDevAgentDelegation: (v: boolean) => void;
 
   // Services
   getServices: () => Service[];
@@ -59,16 +61,23 @@ export const useAppStore = create<AppState>((set, get) => ({
   hasPoP: false,
   hasKYC: false,
   userDelegation: false,
-  devDelegation: false,
+  appDelegation: false,
+  devAgentDelegation: false,
   setHasPoP: (v) => set({ hasPoP: v }),
   setHasKYC: (v) => set({ hasKYC: v }),
   setUserDelegation: (v) => set({ userDelegation: v }),
-  setDevDelegation: (v) => set({ devDelegation: v }),
+  setAppDelegation: (v) => set({ appDelegation: v }),
+  setDevAgentDelegation: (v) => set({ devAgentDelegation: v }),
 
   // Services
   getServices: () => {
     const state = get();
-    const base = state.mode === "user" ? USER_SERVICES : DEV_SERVICES;
+    const serviceMap: Record<AppMode, Service[]> = {
+      user: USER_SERVICES,
+      app: APP_SERVICES,
+      dev: DEV_AGENT_SERVICES,
+    };
+    const base = serviceMap[state.mode];
     const custom = state.customServices.filter((s) => s.mode === state.mode);
     return [...base, ...custom];
   },

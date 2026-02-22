@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useAppStore } from "@/lib/store";
-import type { IdentityGate, Service } from "@/lib/types";
+import type { AppMode, IdentityGate, Service } from "@/lib/types";
 import ServiceModal from "./ServiceModal";
 
 const FILTERS: { label: string; gate: IdentityGate | null }[] = [
@@ -39,11 +39,21 @@ export default function ServiceCatalog() {
     return allServices.filter((s) => s.gate === filter);
   }, [allServices, filter]);
 
-  const headerTitle = mode === "user" ? "Service Catalog" : "API Integrations";
-  const headerDesc =
-    mode === "user"
-      ? "Browse and consume services that require verified identity credentials through the idOS network."
-      : "Integrate identity-verified APIs into your platform. Your backend agents call these endpoints on behalf of your users.";
+  const headerMap: Record<AppMode, { title: string; desc: string }> = {
+    user: {
+      title: "Service Catalog",
+      desc: "Browse and consume services that require verified identity credentials through the idOS network.",
+    },
+    app: {
+      title: "API Integrations",
+      desc: "Integrate identity-verified APIs into your platform. Your backend agents call these endpoints on behalf of your users.",
+    },
+    dev: {
+      title: "Developer API Catalog",
+      desc: "Identity-gated APIs for the software development lifecycle. Your coding agent accesses these services using your verified credentials.",
+    },
+  };
+  const { title: headerTitle, desc: headerDesc } = headerMap[mode];
 
   return (
     <div className="p-6 animate-fade-in">

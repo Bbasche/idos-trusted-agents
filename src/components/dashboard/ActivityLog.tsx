@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
+import type { AppMode } from "@/lib/types";
 
 const gateColor: Record<string, string> = {
   pop: "bg-green-dim text-green border border-green/20",
@@ -30,9 +31,11 @@ export default function ActivityLog() {
           Activity Log
         </h2>
         <p className="mt-1 text-sm text-t3">
-          {mode === "user"
-            ? "Transparent auditing of every service call made through the idOS agent. Each entry records the gate used, cost paid, and outcome."
-            : "Transparent auditing of every API call made through the platform agent fleet. Each entry records the gate used, cost paid, and outcome."}
+          {({
+            user: "Transparent auditing of every service call made through the idOS agent. Each entry records the gate used, cost paid, and outcome.",
+            app: "Transparent auditing of every API call made through the platform agent fleet. Each entry records the gate used, cost paid, and outcome.",
+            dev: "Transparent auditing of every API call made through your coding agent. Each entry records the gate used, cost paid, and outcome.",
+          } as Record<AppMode, string>)[mode]}
         </p>
       </div>
 

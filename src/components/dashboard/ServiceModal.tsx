@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
-import { USER_SERVICES, DEV_SERVICES } from "@/lib/services";
+import { USER_SERVICES, APP_SERVICES, DEV_AGENT_SERVICES } from "@/lib/services";
 import type { Service, IdentityGate, Credential, AppMode } from "@/lib/types";
 
 type Step = "identity" | "payment" | "result";
@@ -54,7 +54,7 @@ export default function ServiceModal({
 
   // Resolve the full service object from canonical lists (supports custom services too)
   const svc =
-    [...USER_SERVICES, ...DEV_SERVICES, ...customServices].find((s) => s.id === service.id) ?? service;
+    [...USER_SERVICES, ...APP_SERVICES, ...DEV_AGENT_SERVICES, ...customServices].find((s) => s.id === service.id) ?? service;
 
   const isUsed = usedServices.has(svc.id);
   const requiresType = GATE_REQUIRES[svc.gate];
@@ -62,7 +62,12 @@ export default function ServiceModal({
   const isReuse = hasCred;
   const isAG = svc.gate === "kyc-ag";
 
-  const agentLabel = mode === "user" ? "your agent" : "your platform's agents";
+  const agentLabelMap: Record<AppMode, string> = {
+    user: "your agent",
+    app: "your platform's agents",
+    dev: "your coding agent",
+  };
+  const agentLabel = agentLabelMap[mode];
 
   const [step, setStep] = useState<Step>("identity");
   const [loading, setLoading] = useState(false);

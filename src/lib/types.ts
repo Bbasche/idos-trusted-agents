@@ -1,6 +1,6 @@
 export type IdentityGate = "pop" | "kyc" | "kyc-ag" | "uniq";
 
-export type AppMode = "user" | "dev";
+export type AppMode = "user" | "app" | "dev";
 
 export interface Service {
   id: string;

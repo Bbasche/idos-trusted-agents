@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAppStore } from "@/lib/store";
-import type { IdentityGate, Service } from "@/lib/types";
+import type { AppMode, IdentityGate, Service } from "@/lib/types";
 
 const GATE_OPTIONS: { value: IdentityGate; label: string }[] = [
   { value: "pop", label: "Proof of Personhood (PoP)" },
@@ -55,8 +55,8 @@ export default function AddService() {
         </h2>
         <p className="mt-1 text-sm text-t3">
           Register a custom x402-compatible service endpoint. The service will
-          appear in your {mode === "user" ? "personal" : "platform"} catalog and
-          can be called from the {mode === "user" ? "agent terminal" : "API test console"}.
+          appear in your {({ user: "personal", app: "platform", dev: "developer" } as Record<AppMode, string>)[mode]} catalog and
+          can be called from the {({ user: "agent terminal", app: "API test console", dev: "agent terminal" } as Record<AppMode, string>)[mode]}.
         </p>
       </div>
 

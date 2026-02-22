@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAppStore } from "@/lib/store";
+import type { AppMode } from "@/lib/types";
 
 const USER_DELEGATION_CONFIG = {
   sessionKey: "0x7a3b...f9e2",
@@ -18,7 +19,7 @@ const USER_DELEGATION_CONFIG = {
   expires: "2026-03-22T00:00:00Z",
 };
 
-const DEV_DELEGATION_CONFIG = {
+const APP_DELEGATION_CONFIG = {
   platformAccount: "0x4337...bb02",
   fleetSize: 8,
   userDelegations: 142,
@@ -31,6 +32,23 @@ const DEV_DELEGATION_CONFIG = {
     accessUserFunds: false,
   },
   userRevokeEndpoint: "https://app.example.com/idos/revoke",
+};
+
+const DEV_AGENT_DELEGATION_CONFIG = {
+  sessionKey: "0x8b4c...d1f3",
+  smartAccount: "0x4337...cc03",
+  principal: "0xdead...beef",
+  permissions: {
+    createDAG: true,
+    scopedCredentials: true,
+    infraProvisioning: true,
+    codeSigning: true,
+    packagePublishing: true,
+    maxDAG_TTL: "30s",
+    decryptData: false,
+    transferFunds: false,
+  },
+  expires: "2026-03-22T00:00:00Z",
 };
 
 const USER_STEPS = [
@@ -61,7 +79,7 @@ const USER_STEPS = [
   },
 ];
 
-const DEV_STEPS = [
+const APP_STEPS = [
   {
     num: "1",
     title: "Deploy Platform Smart Account",
@@ -89,37 +107,115 @@ const DEV_STEPS = [
   },
 ];
 
+const DEV_AGENT_STEPS = [
+  {
+    num: "1",
+    title: "Deploy Developer Smart Account",
+    desc: "An ERC-4337 smart account is deployed for your developer identity, serving as the on-chain anchor for your coding agent.",
+  },
+  {
+    num: "2",
+    title: "Sign delegateDevAgent",
+    desc: "You sign a scoped delegation granting the coding agent permission to access dev lifecycle APIs — infra, code signing, publishing — on your behalf.",
+  },
+  {
+    num: "3",
+    title: "Agent Gets Session Key",
+    desc: "A temporary session key is issued to the coding agent, bound to the smart account with permissions scoped to developer APIs only.",
+  },
+  {
+    num: "4",
+    title: "dAGs Logged Per API Call",
+    desc: "Every API call the coding agent makes (provisioning, signing, publishing) creates a logged dAG for full auditability.",
+  },
+  {
+    num: "5",
+    title: "Revoke from Dashboard",
+    desc: "You can revoke the coding agent's delegation at any time, instantly disabling its access to all developer APIs.",
+  },
+];
+
 export default function Delegation() {
   const mode = useAppStore((s) => s.mode);
   const userDelegation = useAppStore((s) => s.userDelegation);
-  const devDelegation = useAppStore((s) => s.devDelegation);
+  const appDelegation = useAppStore((s) => s.appDelegation);
+  const devAgentDelegation = useAppStore((s) => s.devAgentDelegation);
   const setUserDelegation = useAppStore((s) => s.setUserDelegation);
-  const setDevDelegation = useAppStore((s) => s.setDevDelegation);
+  const setAppDelegation = useAppStore((s) => s.setAppDelegation);
+  const setDevAgentDelegation = useAppStore((s) => s.setDevAgentDelegation);
   const [enabling, setEnabling] = useState(false);
 
-  const hasDelegation = mode === "user" ? userDelegation : devDelegation;
-  const steps = mode === "user" ? USER_STEPS : DEV_STEPS;
-  const config =
-    mode === "user" ? USER_DELEGATION_CONFIG : DEV_DELEGATION_CONFIG;
+  const delegationMap: Record<AppMode, boolean> = {
+    user: userDelegation,
+    app: appDelegation,
+    dev: devAgentDelegation,
+  };
+  const hasDelegation = delegationMap[mode];
+
+  const stepsMap: Record<AppMode, typeof USER_STEPS> = {
+    user: USER_STEPS,
+    app: APP_STEPS,
+    dev: DEV_AGENT_STEPS,
+  };
+  const steps = stepsMap[mode];
+
+  const configMap: Record<AppMode, object> = {
+    user: USER_DELEGATION_CONFIG,
+    app: APP_DELEGATION_CONFIG,
+    dev: DEV_AGENT_DELEGATION_CONFIG,
+  };
+  const config = configMap[mode];
+
+  const titleMap: Record<AppMode, string> = {
+    user: "Agent Delegation",
+    app: "Fleet Delegation",
+    dev: "Agent Delegation",
+  };
+
+  const descMap: Record<AppMode, string> = {
+    user: "Delegate signing authority to the agent so it can autonomously verify identity and pay for services using your smart account.",
+    app: "Configure fleet-level delegation so your platform agents can create per-user dAGs and call gated services on behalf of your users.",
+    dev: "Delegate signing authority to your coding agent so it can autonomously access developer APIs — provisioning, signing, publishing — using your smart account.",
+  };
+
+  const cardTitleMap: Record<AppMode, string> = {
+    user: "Personal Agent Delegation",
+    app: "Platform Agent Fleet",
+    dev: "Coding Agent Delegation",
+  };
+
+  const cardDescMap: Record<AppMode, string> = {
+    user: "Uses ERC-4337 account abstraction to grant a scoped session key to the agent. No private keys are shared — the smart account validates each UserOperation against your configured permissions.",
+    app: "Uses ERC-4337 account abstraction to manage a fleet of agents operating under a platform smart account. Users delegate to your platform via idOS — your agents create per-user dAGs without ever accessing raw user data.",
+    dev: "Uses ERC-4337 account abstraction to grant a scoped session key to your coding agent. Permissions are limited to developer lifecycle APIs — the agent cannot access personal data or transfer funds.",
+  };
+
+  const scopeDescMap: Record<AppMode, string> = {
+    user: "The active session configuration defining what the agent is permitted to do.",
+    app: "The active fleet configuration defining what the platform agents are permitted to do on behalf of users.",
+    dev: "The active session configuration defining what the coding agent is permitted to do across developer APIs.",
+  };
 
   function handleEnable() {
     setEnabling(true);
     setTimeout(() => {
-      if (mode === "user") {
-        setUserDelegation(true);
-      } else {
-        setDevDelegation(true);
-      }
+      const setterMap: Record<AppMode, (v: boolean) => void> = {
+        user: setUserDelegation,
+        app: setAppDelegation,
+        dev: setDevAgentDelegation,
+      };
+      setterMap[mode](true);
       setEnabling(false);
     }, 1200);
   }
 
   function handleRevoke() {
-    if (mode === "user") {
-      setUserDelegation(false);
-    } else {
-      setDevDelegation(false);
-    }
+    const setterMap: Record<AppMode, (v: boolean) => void> = {
+      user: setUserDelegation,
+      app: setAppDelegation,
+      dev: setDevAgentDelegation,
+    };
+    setterMap[mode](false);
   }
 
   return (
@@ -127,12 +223,10 @@ export default function Delegation() {
       {/* Header */}
       <div>
         <h2 className="font-sans text-2xl font-semibold text-t1">
-          {mode === "user" ? "Agent Delegation" : "Fleet Delegation"}
+          {titleMap[mode]}
         </h2>
         <p className="mt-1 text-sm text-t3">
-          {mode === "user"
-            ? "Delegate signing authority to the agent so it can autonomously verify identity and pay for services using your smart account."
-            : "Configure fleet-level delegation so your platform agents can create per-user dAGs and call gated services on behalf of your users."}
+          {descMap[mode]}
         </p>
       </div>
 
@@ -140,14 +234,10 @@ export default function Delegation() {
         {/* Card 1 — Delegation explanation */}
         <div className="rounded-xl border border-b1 bg-s1 p-6">
           <h3 className="text-lg font-semibold text-t1">
-            {mode === "user"
-              ? "Personal Agent Delegation"
-              : "Platform Agent Fleet"}
+            {cardTitleMap[mode]}
           </h3>
           <p className="mt-1 text-sm text-t3">
-            {mode === "user"
-              ? "Uses ERC-4337 account abstraction to grant a scoped session key to the agent. No private keys are shared — the smart account validates each UserOperation against your configured permissions."
-              : "Uses ERC-4337 account abstraction to manage a fleet of agents operating under a platform smart account. Users delegate to your platform via idOS — your agents create per-user dAGs without ever accessing raw user data."}
+            {cardDescMap[mode]}
           </p>
 
           {/* Steps */}
@@ -203,9 +293,7 @@ export default function Delegation() {
         <div className="rounded-xl border border-b1 bg-s1 p-6">
           <h3 className="text-lg font-semibold text-t1">Delegation Scope</h3>
           <p className="mt-1 text-sm text-t3">
-            {mode === "user"
-              ? "The active session configuration defining what the agent is permitted to do."
-              : "The active fleet configuration defining what the platform agents are permitted to do on behalf of users."}
+            {scopeDescMap[mode]}
           </p>
 
           {hasDelegation ? (
