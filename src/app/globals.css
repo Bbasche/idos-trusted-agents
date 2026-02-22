@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #050507;
+  --color-s1: #0b0b0f;
+  --color-s2: #111116;
+  --color-s3: #18181f;
+  --color-s4: #20202c;
+  --color-b1: #242434;
+  --color-b2: #33334a;
+  --color-b3: #44445e;
+  --color-t1: #ededf2;
+  --color-t2: #9c9cb5;
+  --color-t3: #6a6a80;
+  --color-t4: #42424f;
+  --color-green: #00e87b;
+  --color-green-dim: #00e87b12;
+  --color-green-mid: #00e87b28;
+  --color-green-bright: #00e87b50;
+  --color-blue: #4d90ff;
+  --color-blue-dim: #4d90ff12;
+  --color-orange: #ff8c3a;
+  --color-orange-dim: #ff8c3a12;
+  --color-purple: #9d7aff;
+  --color-purple-dim: #9d7aff12;
+  --color-red: #ff4d6a;
+  --color-red-dim: #ff4d6a12;
+  --color-yellow: #ffd84d;
+  --color-yellow-dim: #ffd84d12;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Outfit", -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-t1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Noise overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.015'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Animations */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 6px var(--color-green-mid); }
+  50% { box-shadow: 0 0 14px var(--color-green-bright); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { border-color: var(--color-green-mid); transform: scale(1); }
+  50% { border-color: var(--color-green-bright); transform: scale(1.03); }
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.animate-spin-fast {
+  animation: spin 0.8s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 3s ease-in-out infinite;
+}
