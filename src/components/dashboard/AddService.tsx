@@ -11,16 +11,10 @@ const GATE_OPTIONS: { value: IdentityGate; label: string }[] = [
   { value: "kyc-ag", label: "KYC with Access Grant (AG)" },
 ];
 
-const GATE_COLOR: Record<IdentityGate, Service["color"]> = {
-  pop: "green",
-  uniq: "yellow",
-  kyc: "blue",
-  "kyc-ag": "orange",
-};
-
 export default function AddService() {
   const addCustomService = useAppStore((s) => s.addCustomService);
   const setScreen = useAppStore((s) => s.setScreen);
+  const mode = useAppStore((s) => s.mode);
 
   const [name, setName] = useState("");
   const [endpoint, setEndpoint] = useState("");
@@ -36,10 +30,11 @@ export default function AddService() {
       name: name.trim(),
       icon: "\u2699\uFE0F",
       desc: description.trim() || "Custom service added manually.",
+      scenario: "",
+      ctx: "",
       gate,
       price: parseFloat(price || "0").toFixed(2),
-      color: GATE_COLOR[gate],
-      category: "Custom",
+      mode,
     };
 
     addCustomService(service);
@@ -60,7 +55,8 @@ export default function AddService() {
         </h2>
         <p className="mt-1 text-sm text-t3">
           Register a custom x402-compatible service endpoint. The service will
-          appear in your catalog and can be called from the agent terminal.
+          appear in your {mode === "user" ? "personal" : "platform"} catalog and
+          can be called from the {mode === "user" ? "agent terminal" : "API test console"}.
         </p>
       </div>
 

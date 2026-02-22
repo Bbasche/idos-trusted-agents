@@ -10,14 +10,18 @@ interface TermLine {
 }
 
 export default function Terminal() {
-  const services = useAppStore((s) => s.services);
+  const getServices = useAppStore((s) => s.getServices);
   const customServices = useAppStore((s) => s.customServices);
   const hasPoP = useAppStore((s) => s.hasPoP);
   const hasKYC = useAppStore((s) => s.hasKYC);
-  const hasDelegation = useAppStore((s) => s.hasDelegation);
+  const mode = useAppStore((s) => s.mode);
+  const userDelegation = useAppStore((s) => s.userDelegation);
+  const devDelegation = useAppStore((s) => s.devDelegation);
   const usedServices = useAppStore((s) => s.usedServices);
   const markServiceUsed = useAppStore((s) => s.markServiceUsed);
   const addLog = useAppStore((s) => s.addLog);
+
+  const hasDelegation = mode === "user" ? userDelegation : devDelegation;
 
   const [lines, setLines] = useState<TermLine[]>([
     { text: "# idOS Agent Terminal v1.0", color: "gray" },
@@ -30,7 +34,7 @@ export default function Terminal() {
   const [running, setRunning] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const allServices = [...services, ...customServices];
+  const allServices = getServices();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -99,6 +103,7 @@ export default function Terminal() {
         cost: "$0.00",
         status: "failed",
         note: `Missing ${svc.gate} credential`,
+        mode,
       };
       addLog(logEntry);
       addLine("", "default");
@@ -154,6 +159,7 @@ export default function Terminal() {
       cost: `$${svc.price}`,
       status: "success",
       note: "Autonomous agent call",
+      mode,
     };
     addLog(logEntry);
     markServiceUsed(svc.id);
@@ -170,18 +176,20 @@ export default function Terminal() {
     default: "text-t2",
   };
 
+  const terminalTitle = mode === "user" ? "Agent Terminal" : "API Test Console";
+  const terminalDesc =
+    mode === "user"
+      ? "Simulate autonomous agent calls to x402-gated services. The agent handles identity verification, credential presentation, and micropayments — all without user intervention."
+      : "Test your platform's agent fleet calls to x402-gated APIs. Agents handle identity verification, credential presentation, and micropayments on behalf of your users.";
+
   return (
     <div className="animate-fade-in space-y-6">
       {/* Header */}
       <div>
         <h2 className="font-sans text-2xl font-semibold text-t1">
-          Agent Terminal
+          {terminalTitle}
         </h2>
-        <p className="mt-1 text-sm text-t3">
-          Simulate autonomous agent calls to x402-gated services. The agent
-          handles identity verification, credential presentation, and
-          micropayments — all without user intervention.
-        </p>
+        <p className="mt-1 text-sm text-t3">{terminalDesc}</p>
       </div>
 
       {/* Delegation status */}

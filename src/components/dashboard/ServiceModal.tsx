@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
-import type { Service, IdentityGate, Credential } from "@/lib/types";
+import { USER_SERVICES, DEV_SERVICES } from "@/lib/services";
+import type { Service, IdentityGate, Credential, AppMode } from "@/lib/types";
 
 type Step = "identity" | "payment" | "result";
 const STEPS: Step[] = ["identity", "payment", "result"];
@@ -47,13 +48,21 @@ export default function ServiceModal({
     markServiceUsed,
     addCredential,
     addLog,
+    customServices,
+    mode,
   } = useAppStore();
 
-  const isUsed = usedServices.has(service.id);
-  const requiresType = GATE_REQUIRES[service.gate];
+  // Resolve the full service object from canonical lists (supports custom services too)
+  const svc =
+    [...USER_SERVICES, ...DEV_SERVICES, ...customServices].find((s) => s.id === service.id) ?? service;
+
+  const isUsed = usedServices.has(svc.id);
+  const requiresType = GATE_REQUIRES[svc.gate];
   const hasCred = requiresType === "PoP" ? hasPoP : hasKYC;
   const isReuse = hasCred;
-  const isAG = service.gate === "kyc-ag";
+  const isAG = svc.gate === "kyc-ag";
+
+  const agentLabel = mode === "user" ? "your agent" : "your platform's agents";
 
   const [step, setStep] = useState<Step>("identity");
   const [loading, setLoading] = useState(false);
@@ -70,6 +79,7 @@ export default function ServiceModal({
         ? [
             "Initiating KYC verification...",
             "Connecting to idOS Relay...",
+            "Creating scoped Access Grant...",
             "AG re-verification in progress...",
             "Credential issued by Access Grant",
           ]
@@ -81,7 +91,7 @@ export default function ServiceModal({
           ];
 
   const paymentSubSteps = [
-    `Preparing payment of ${service.price === "0.00" ? "0" : service.price} USDC...`,
+    `Preparing payment of ${svc.price === "0.00" ? "0" : svc.price} USDC...`,
     "Transaction submitted",
     "Payment confirmed",
   ];
@@ -128,19 +138,20 @@ export default function ServiceModal({
     setSubStep(0);
     await delay(500);
 
-    markServiceUsed(service.id);
+    markServiceUsed(svc.id);
     addLog({
       time: new Date().toISOString(),
-      service: service.name,
-      gate: service.gate,
-      cost: service.price === "0.00" ? "Free" : `${service.price} USDC`,
+      service: svc.name,
+      gate: svc.gate,
+      cost: svc.price === "0.00" ? "Free" : `${svc.price} USDC`,
       status: "success",
       note: isReuse ? "Credential reused" : `New ${requiresType} credential issued`,
+      mode,
     });
 
     setCompleted(true);
     setLoading(false);
-  }, [service, markServiceUsed, addLog, isReuse, requiresType]);
+  }, [svc, markServiceUsed, addLog, isReuse, requiresType, mode]);
 
   // Auto-run steps
   useEffect(() => {
@@ -177,11 +188,11 @@ export default function ServiceModal({
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-b1">
           <div className="flex items-center gap-3">
-            <span className="text-xl">{service.icon}</span>
+            <span className="text-xl">{svc.icon}</span>
             <div>
-              <h2 className="text-sm font-medium text-t1">{service.name}</h2>
-              <span className="font-mono text-[10px] text-t4 uppercase tracking-wider">
-                {service.category}
+              <h2 className="text-sm font-medium text-t1">{svc.name}</h2>
+              <span className="font-mono text-[10px] text-t4 leading-relaxed">
+                {svc.ctx}
               </span>
             </div>
           </div>
@@ -191,6 +202,12 @@ export default function ServiceModal({
           >
             ✕
           </button>
+        </div>
+
+        {/* Scenario card */}
+        <div className="mx-5 mt-4 px-3 py-2.5 rounded-lg border border-b1 bg-s2">
+          <span className="block font-mono text-[10px] uppercase tracking-wider text-t4 mb-1">Scenario</span>
+          <p className="text-xs text-t2 leading-relaxed">{svc.scenario}</p>
         </div>
 
         {/* Step indicator */}
@@ -297,13 +314,13 @@ export default function ServiceModal({
               </div>
               <h3 className="text-sm font-medium text-t1 mb-1">Service Accessed Successfully</h3>
               <p className="text-xs text-t3 mb-3">
-                {service.name} has been consumed using your {requiresType} credential.
+                {svc.name} has been consumed using {agentLabel}&apos;s {requiresType} credential.
               </p>
               <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-s2 border border-b1">
                 <div className="text-left">
                   <span className="block font-mono text-[10px] text-t4">Cost</span>
                   <span className="block font-mono text-xs text-t1">
-                    {service.price === "0.00" ? "Free" : `${service.price} USDC`}
+                    {svc.price === "0.00" ? "Free" : `${svc.price} USDC`}
                   </span>
                 </div>
                 <span className="w-px h-6 bg-b1" />

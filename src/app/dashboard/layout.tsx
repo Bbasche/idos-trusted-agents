@@ -1,35 +1,37 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
-import type { AppScreen } from "@/lib/types";
+import type { AppMode, AppScreen } from "@/lib/types";
 import LoginOverlay from "@/components/dashboard/LoginOverlay";
 
-const NAV_GROUPS: { label: string; items: { screen: AppScreen; label: string; icon: string }[] }[] = [
-  {
-    label: "Marketplace",
-    items: [
-      { screen: "catalog", label: "Service Catalog", icon: "◫" },
-      { screen: "activity", label: "Activity Log", icon: "◷" },
-    ],
-  },
-  {
-    label: "Identity",
-    items: [
-      { screen: "credentials", label: "My Credentials", icon: "⬡" },
-      { screen: "delegation", label: "Agent Delegation", icon: "⇌" },
-    ],
-  },
-  {
-    label: "Advanced",
-    items: [
-      { screen: "add-service", label: "Add Service", icon: "+" },
-      { screen: "terminal", label: "Agent Terminal", icon: "▸" },
-    ],
-  },
-];
+function getNavGroups(mode: AppMode) {
+  return [
+    {
+      label: mode === "user" ? "Personal Agent" : "Platform",
+      items: [
+        { screen: "catalog" as AppScreen, label: mode === "user" ? "Service Catalog" : "API Integrations", icon: "◫" },
+        { screen: "activity" as AppScreen, label: "Activity Log", icon: "◷" },
+      ],
+    },
+    {
+      label: "Identity",
+      items: [
+        { screen: "credentials" as AppScreen, label: "My Credentials", icon: "⬡" },
+        { screen: "delegation" as AppScreen, label: mode === "user" ? "Agent Delegation" : "Fleet Delegation", icon: "⇌" },
+      ],
+    },
+    {
+      label: "Advanced",
+      items: [
+        { screen: "add-service" as AppScreen, label: "Add Service", icon: "+" },
+        { screen: "terminal" as AppScreen, label: mode === "user" ? "Agent Terminal" : "API Test Console", icon: "▸" },
+      ],
+    },
+  ];
+}
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { loggedIn, setLoggedIn, currentScreen, setScreen, hasPoP, hasKYC, walletAddress } = useAppStore();
+  const { loggedIn, setLoggedIn, currentScreen, setScreen, hasPoP, hasKYC, walletAddress, mode, setMode } = useAppStore();
 
   if (!loggedIn) {
     return (
@@ -39,23 +41,52 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  const shortAddress = walletAddress
-    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-    : "0x000...0000";
+  const displayAddress = mode === "user"
+    ? (walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : "0x000...0000")
+    : "yourapp.eth";
+
+  const navGroups = getNavGroups(mode);
 
   return (
     <div className="flex flex-col h-screen bg-bg overflow-hidden">
       {/* ── Top bar ── */}
       <header className="h-12 min-h-12 flex items-center justify-between px-4 border-b border-b1 bg-s1/80 backdrop-blur-sm z-20">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-green opacity-60 animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
-          </span>
-          <span className="font-mono text-sm text-t2 tracking-tight">
-            idOS<span className="text-green">·</span>agents
-          </span>
+        {/* Left: Logo + Mode toggle */}
+        <div className="flex items-center gap-3">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-green opacity-60 animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
+            </span>
+            <span className="font-mono text-sm text-t2 tracking-tight">
+              idOS<span className="text-green">·</span>agents
+            </span>
+          </div>
+
+          {/* Mode toggle */}
+          <div className="flex items-center bg-s3 rounded-lg p-0.5 gap-0.5">
+            <button
+              onClick={() => setMode("user")}
+              className={`font-mono text-[9px] px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                mode === "user"
+                  ? "bg-s1 text-t1 border border-b1"
+                  : "bg-transparent text-t3 border border-transparent"
+              }`}
+            >
+              👤 Personal Agent
+            </button>
+            <button
+              onClick={() => setMode("dev")}
+              className={`font-mono text-[9px] px-2.5 py-1 rounded transition-colors cursor-pointer ${
+                mode === "dev"
+                  ? "bg-s1 text-t1 border border-b1"
+                  : "bg-transparent text-t3 border border-transparent"
+              }`}
+            >
+              🛠️ Platform Developer
+            </button>
+          </div>
         </div>
 
         {/* Right pills */}
@@ -87,7 +118,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           {/* Address */}
           <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full border border-b1 bg-s2 text-t3">
-            {shortAddress}
+            {displayAddress}
           </span>
         </div>
       </header>
@@ -95,7 +126,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-1 overflow-hidden">
         {/* ── Sidebar ── */}
         <aside className="w-[220px] min-w-[220px] border-r border-b1 bg-s1/50 flex flex-col py-4 overflow-y-auto">
-          {NAV_GROUPS.map((group) => (
+          {navGroups.map((group) => (
             <div key={group.label} className="mb-5">
               <span className="block px-5 mb-1.5 font-mono text-[10px] uppercase tracking-widest text-t4">
                 {group.label}

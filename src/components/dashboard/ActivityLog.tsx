@@ -18,6 +18,9 @@ const gateLabel: Record<string, string> = {
 
 export default function ActivityLog() {
   const logs = useAppStore((s) => s.logs);
+  const mode = useAppStore((s) => s.mode);
+
+  const filteredLogs = logs.filter((l) => l.mode === mode);
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -27,13 +30,14 @@ export default function ActivityLog() {
           Activity Log
         </h2>
         <p className="mt-1 text-sm text-t3">
-          Transparent auditing of every service call made through the idOS
-          agent. Each entry records the gate used, cost paid, and outcome.
+          {mode === "user"
+            ? "Transparent auditing of every service call made through the idOS agent. Each entry records the gate used, cost paid, and outcome."
+            : "Transparent auditing of every API call made through the platform agent fleet. Each entry records the gate used, cost paid, and outcome."}
         </p>
       </div>
 
       {/* Table */}
-      {logs.length === 0 ? (
+      {filteredLogs.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-b1 bg-s1 py-20">
           <span className="text-3xl">&#128203;</span>
           <p className="mt-3 text-sm text-t3">
@@ -53,7 +57,7 @@ export default function ActivityLog() {
               </tr>
             </thead>
             <tbody className="divide-y divide-b1">
-              {logs.map((log, i) => (
+              {filteredLogs.map((log, i) => (
                 <tr
                   key={`${log.time}-${i}`}
                   className="transition-colors hover:bg-s2"

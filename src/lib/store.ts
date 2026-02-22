@@ -1,8 +1,8 @@
 "use client";
 
 import { create } from "zustand";
-import type { AppScreen, Credential, LogEntry, Service } from "./types";
-import { DEFAULT_SERVICES } from "./services";
+import type { AppMode, AppScreen, Credential, LogEntry, Service } from "./types";
+import { USER_SERVICES, DEV_SERVICES } from "./services";
 
 interface AppState {
   // Auth
@@ -10,16 +10,22 @@ interface AppState {
   walletAddress: string | null;
   setLoggedIn: (loggedIn: boolean, address?: string) => void;
 
+  // Mode
+  mode: AppMode;
+  setMode: (mode: AppMode) => void;
+
   // Identity
   hasPoP: boolean;
   hasKYC: boolean;
-  hasDelegation: boolean;
+  userDelegation: boolean;
+  devDelegation: boolean;
   setHasPoP: (v: boolean) => void;
   setHasKYC: (v: boolean) => void;
-  setHasDelegation: (v: boolean) => void;
+  setUserDelegation: (v: boolean) => void;
+  setDevDelegation: (v: boolean) => void;
 
   // Services
-  services: Service[];
+  getServices: () => Service[];
   customServices: Service[];
   usedServices: Set<string>;
   addCustomService: (svc: Service) => void;
@@ -38,23 +44,34 @@ interface AppState {
   setScreen: (screen: AppScreen) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>((set, get) => ({
   // Auth
   loggedIn: false,
   walletAddress: null,
   setLoggedIn: (loggedIn, address) =>
     set({ loggedIn, walletAddress: address ?? null }),
 
+  // Mode
+  mode: "user",
+  setMode: (mode) => set({ mode, currentScreen: "catalog" }),
+
   // Identity
   hasPoP: false,
   hasKYC: false,
-  hasDelegation: false,
+  userDelegation: false,
+  devDelegation: false,
   setHasPoP: (v) => set({ hasPoP: v }),
   setHasKYC: (v) => set({ hasKYC: v }),
-  setHasDelegation: (v) => set({ hasDelegation: v }),
+  setUserDelegation: (v) => set({ userDelegation: v }),
+  setDevDelegation: (v) => set({ devDelegation: v }),
 
   // Services
-  services: DEFAULT_SERVICES,
+  getServices: () => {
+    const state = get();
+    const base = state.mode === "user" ? USER_SERVICES : DEV_SERVICES;
+    const custom = state.customServices.filter((s) => s.mode === state.mode);
+    return [...base, ...custom];
+  },
   customServices: [],
   usedServices: new Set(),
   addCustomService: (svc) =>

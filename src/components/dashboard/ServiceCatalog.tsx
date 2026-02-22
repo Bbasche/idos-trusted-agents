@@ -20,34 +20,37 @@ const GATE_LABELS: Record<IdentityGate, string> = {
   uniq: "Uniqueness",
 };
 
-const GATE_COLORS: Record<string, string> = {
-  green: "text-green bg-green-dim border-green/20",
-  blue: "text-blue bg-blue-dim border-blue/20",
-  purple: "text-purple bg-purple-dim border-purple/20",
-  orange: "text-orange bg-orange-dim border-orange/20",
-  yellow: "text-yellow bg-yellow-dim border-yellow/20",
+const GATE_COLORS: Record<IdentityGate, string> = {
+  pop: "text-green bg-green-dim border-green/20",
+  kyc: "text-blue bg-blue-dim border-blue/20",
+  "kyc-ag": "text-orange bg-orange-dim border-orange/20",
+  uniq: "text-yellow bg-yellow-dim border-yellow/20",
 };
 
 export default function ServiceCatalog() {
-  const { services, customServices, usedServices } = useAppStore();
+  const { getServices, usedServices, mode } = useAppStore();
   const [filter, setFilter] = useState<IdentityGate | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const allServices = useMemo(() => [...services, ...customServices], [services, customServices]);
+  const allServices = useMemo(() => getServices(), [getServices]);
 
   const filtered = useMemo(() => {
     if (!filter) return allServices;
     return allServices.filter((s) => s.gate === filter);
   }, [allServices, filter]);
 
+  const headerTitle = mode === "user" ? "Service Catalog" : "API Integrations";
+  const headerDesc =
+    mode === "user"
+      ? "Browse and consume services that require verified identity credentials through the idOS network."
+      : "Integrate identity-verified APIs into your platform. Your backend agents call these endpoints on behalf of your users.";
+
   return (
     <div className="p-6 animate-fade-in">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-t1 mb-1">Service Catalog</h1>
-        <p className="text-sm text-t3">
-          Browse and consume services that require verified identity credentials through the idOS network.
-        </p>
+        <h1 className="text-xl font-semibold text-t1 mb-1">{headerTitle}</h1>
+        <p className="text-sm text-t3">{headerDesc}</p>
       </div>
 
       {/* Disclaimer */}
@@ -95,18 +98,20 @@ export default function ServiceCatalog() {
                 </span>
               )}
 
-              {/* Icon + Category */}
+              {/* Icon */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-lg">{svc.icon}</span>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-t4">
-                  {svc.category}
-                </span>
               </div>
 
               {/* Name */}
-              <h3 className="text-sm font-medium text-t1 mb-1.5 group-hover:text-green transition-colors">
+              <h3 className="text-sm font-medium text-t1 mb-1 group-hover:text-green transition-colors">
                 {svc.name}
               </h3>
+
+              {/* Context line */}
+              <p className="font-mono text-[10px] text-t4 mb-1.5 leading-relaxed">
+                {svc.ctx}
+              </p>
 
               {/* Description */}
               <p className="text-xs text-t3 leading-relaxed mb-3 line-clamp-2">
@@ -117,7 +122,7 @@ export default function ServiceCatalog() {
               <div className="flex items-center justify-between">
                 <span
                   className={`font-mono text-[10px] px-2 py-0.5 rounded-full border ${
-                    GATE_COLORS[svc.color] ?? "text-t3 bg-s2 border-b1"
+                    GATE_COLORS[svc.gate] ?? "text-t3 bg-s2 border-b1"
                   }`}
                 >
                   {GATE_LABELS[svc.gate]}
