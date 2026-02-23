@@ -11,6 +11,9 @@ export default function Home() {
             idOS Trusted Agents
           </Link>
           <div className="hidden items-center gap-6 md:flex">
+            <a href="#erc8004" className="font-mono text-xs tracking-wide text-t3 transition-colors hover:text-t1">
+              ERC-8004
+            </a>
             <a href="#audiences" className="font-mono text-xs tracking-wide text-t3 transition-colors hover:text-t1">
               Who It&apos;s For
             </a>
@@ -44,10 +47,10 @@ export default function Home() {
         <div className="relative z-10 mx-auto max-w-3xl text-center animate-fade-in">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-b1 bg-s1 px-4 py-1.5">
             <span className="rounded-full bg-green-dim border border-green px-2 py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-wide text-green">
-              Product Brief
+              ERC-8004
             </span>
             <span className="font-mono text-[11px] text-t3">
-              Identity-Gated API Marketplace
+              The Compliance Layer for Trustless Agents
             </span>
           </div>
 
@@ -57,10 +60,11 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mb-10 max-w-xl font-sans text-base leading-relaxed text-t2 md:text-lg">
-            An identity-gated API marketplace where AI agents pay with USDC
-            and prove their principal&apos;s identity through idOS — once. KYC,
-            proof-of-personhood, and uniqueness credentials are portable, private,
-            and reusable across every API in the ecosystem.
+            ERC-8004 gives AI agents on-chain identity, reputation, and discovery.
+            idOS extends it with the missing piece — real-world credential
+            verification. Agents prove their principal&apos;s KYC, age, and
+            uniqueness through idOS, pay with USDC via x402, and every credential
+            is portable, private, and reusable across every API in the ecosystem.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -98,15 +102,16 @@ export default function Home() {
               The Problem
             </span>
             <h2 className="mb-3 font-serif text-3xl leading-snug text-t1 md:text-4xl">
-              x402 solved payments.
+              ERC-8004 solved agent identity.
               <br />
-              <span className="text-t3">Identity breaks every time.</span>
+              <span className="text-t3">Real-world compliance breaks every time.</span>
             </h2>
             <p className="text-sm leading-relaxed text-t2">
-              AI agents can pay for any API with stablecoins. But when those APIs
-              need KYC, age verification, or Sybil resistance — the agent hits a wall.
-              Worse: every API demands re-verification from scratch. Credit checks,
-              background checks, age gates — each one siloed.
+              AI agents have on-chain identity (ERC-8004), reputation scores, and can
+              pay for any API with stablecoins (x402). But when those APIs need KYC,
+              age verification, or Sybil resistance — knowing <em>which agent</em> is
+              calling isn&apos;t enough. The API needs to verify the <em>human behind
+              the agent</em>. That&apos;s the gap.
             </p>
           </div>
 
@@ -118,8 +123,9 @@ export default function Home() {
               </div>
               <h3 className="mb-1 text-sm font-semibold text-t1">Zero-PII Compliance</h3>
               <p className="text-xs leading-relaxed text-t2">
-                APIs verify credential hashes — never seeing, storing, or decrypting
-                personal data. All access grants auto-expire.
+                ERC-8004 identifies the agent. idOS verifies the human. APIs check
+                credential hashes — never seeing, storing, or decrypting personal
+                data. All access grants auto-expire.
               </p>
             </div>
 
@@ -130,8 +136,9 @@ export default function Home() {
               </div>
               <h3 className="mb-1 text-sm font-semibold text-t1">Verify Once, Reuse Everywhere</h3>
               <p className="text-xs leading-relaxed text-t2">
-                One KYC credential powers every API. A PoP check from one service
-                satisfies the next. No re-verification, no new accounts.
+                The agent&apos;s ERC-8004 identity is portable across chains. The
+                human&apos;s idOS credential is portable across APIs. Verify once —
+                both agent and principal — and every subsequent call is instant.
               </p>
             </div>
 
@@ -142,9 +149,125 @@ export default function Home() {
               </div>
               <h3 className="mb-1 text-sm font-semibold text-t1">Agent-Native + Delegated</h3>
               <p className="text-xs leading-relaxed text-t2">
-                Agents create scoped dAGs autonomously via smart account delegation.
+                Agents mint ERC-8004 identity NFTs, build on-chain reputation, then
+                create scoped dAGs autonomously via smart account delegation.
                 Session keys are limited — they can never decrypt data or move funds.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ERC-8004 + idOS Section ── */}
+      <section id="erc8004" className="relative border-y border-b1 bg-s1 px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 max-w-2xl">
+            <span className="mb-2 inline-block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green">
+              ERC-8004 + idOS
+            </span>
+            <h2 className="mb-3 font-serif text-3xl leading-snug text-t1 md:text-4xl">
+              Agent identity meets{" "}
+              <span className="text-green">human compliance.</span>
+            </h2>
+            <p className="text-sm leading-relaxed text-t2">
+              ERC-8004 and idOS solve different halves of the same problem. Together,
+              they give every AI agent a complete trust stack — from on-chain reputation
+              to real-world regulatory compliance.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {/* ERC-8004 column */}
+            <div className="rounded-xl border border-b1 bg-bg p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="rounded border border-blue/30 bg-blue-dim px-2 py-0.5 font-mono text-[8px] font-bold tracking-wide text-blue">
+                  ERC-8004
+                </span>
+                <span className="text-[11px] font-semibold text-t1">Agent Layer</span>
+              </div>
+              <div className="space-y-2.5">
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-blue">Identity Registry</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    ERC-721 NFT per agent. Portable, transferable on-chain identity
+                    with structured metadata and service endpoints.
+                  </p>
+                </div>
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-blue">Reputation Registry</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    Signed feedback with anti-spam. Clients rate agents on-chain.
+                    Aggregation for composable trust scores.
+                  </p>
+                </div>
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-blue">Validation Registry</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    Independent verification hooks — staking, zkML proofs, TEE
+                    attestations. Pluggable trust models scaled to risk.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Arrow / bridge column */}
+            <div className="flex flex-col items-center justify-center gap-3">
+              <div className="rounded-xl border border-green/30 bg-green-dim px-5 py-4 text-center">
+                <div className="mb-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-green">
+                  Trusted Agents
+                </div>
+                <p className="text-[11px] leading-snug text-t2">
+                  <strong className="text-t1">The bridge.</strong> Maps ERC-8004
+                  agent identities to idOS human credentials. An agent calls an API →
+                  the API knows <em>which agent</em> (8004) and <em>which human</em> (idOS)
+                  — without seeing any PII.
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <div className="h-6 w-px bg-green/30" />
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-1.5">
+                  <p className="text-center text-[9px] leading-snug text-t3">
+                    <span className="text-blue">agentId</span> + <span className="text-green">dAG</span> + <span className="text-purple">x402 payment</span>
+                    <br />
+                    = one authenticated, paid API call
+                  </p>
+                </div>
+                <div className="h-6 w-px bg-green/30" />
+              </div>
+            </div>
+
+            {/* idOS column */}
+            <div className="rounded-xl border border-b1 bg-bg p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="rounded border border-green/30 bg-green-dim px-2 py-0.5 font-mono text-[8px] font-bold tracking-wide text-green">
+                  idOS
+                </span>
+                <span className="text-[11px] font-semibold text-t1">Human Layer</span>
+              </div>
+              <div className="space-y-2.5">
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-green">Credential Store</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    Encrypted W3C credentials on the idOS network. User-sovereign.
+                    KYC, PoP, uniqueness — all portable across APIs.
+                  </p>
+                </div>
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-green">Delegated Access Grants</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    Scoped, time-limited dAGs let agents prove their principal&apos;s
+                    credentials. Auto-expire. User-revocable.
+                  </p>
+                </div>
+                <div className="rounded-md border border-b1 bg-s2 px-3 py-2">
+                  <h4 className="text-[10.5px] font-semibold text-green">FaceSign + Relay</h4>
+                  <p className="mt-0.5 text-[9.5px] leading-snug text-t3">
+                    Biometric liveness auth + KYC orchestration. Verify once via
+                    any trusted issuer — credential stored on idOS, data deleted
+                    from provider.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -503,12 +626,13 @@ export default function Home() {
                 Personal Agent Delegation
               </div>
               <p className="text-[11px] leading-relaxed text-t2">
-                User deploys ERC-4337 smart account → signs{" "}
+                Agent registers ERC-8004 identity NFT → user deploys ERC-4337 smart
+                account → signs{" "}
                 <code className="rounded border border-b1 bg-s3 px-1 py-0.5 font-mono text-[9px] text-green">
                   delegateAGSigning
                 </code>{" "}
-                scoping which credential types and APIs → agent gets session key → creates
-                time-limited dAGs autonomously → user can revoke from idOS dashboard.
+                scoping credential types + APIs → agent creates time-limited dAGs
+                autonomously → reputation accrues on-chain → user can revoke anytime.
               </p>
             </div>
             <div className="rounded-lg border border-b1 bg-s1 p-4">
@@ -516,13 +640,13 @@ export default function Home() {
                 App Fleet Delegation
               </div>
               <p className="text-[11px] leading-relaxed text-t2">
-                Platform deploys smart account → user verifies through platform&apos;s idOS
-                integration → user signs{" "}
+                Platform registers fleet on ERC-8004 Identity Registry → user verifies
+                through platform&apos;s idOS integration → user signs{" "}
                 <code className="rounded border border-b1 bg-s3 px-1 py-0.5 font-mono text-[9px] text-green">
                   delegateToPlatform
                 </code>{" "}
-                scoping credentials → platform&apos;s agent fleet creates dAGs per-user → users
-                can view/revoke from idOS dashboard.
+                scoping credentials → fleet agents create dAGs per-user, building
+                verifiable reputation → users can view/revoke from idOS dashboard.
               </p>
             </div>
             <div className="rounded-lg border border-b1 bg-s1 p-4">
@@ -530,13 +654,14 @@ export default function Home() {
                 Developer Agent Delegation
               </div>
               <p className="text-[11px] leading-relaxed text-t2">
-                Developer deploys ERC-4337 smart account → signs{" "}
+                Coding agent mints ERC-8004 identity → developer deploys ERC-4337
+                smart account → signs{" "}
                 <code className="rounded border border-b1 bg-s3 px-1 py-0.5 font-mono text-[9px] text-green">
                   delegateDevAgent
                 </code>{" "}
-                scoping developer API permissions (infra, signing, publishing) → coding agent
-                gets session key → creates dAGs per API call → developer can revoke from
-                idOS dashboard.
+                scoping dev API permissions → agent creates dAGs per API call,
+                validated via ERC-8004 Validation Registry → developer can revoke
+                from idOS dashboard.
               </p>
             </div>
           </div>
@@ -631,7 +756,15 @@ export default function Home() {
             <br />
             &nbsp;&nbsp;&nbsp;&nbsp;price: <span className="text-purple">{'"$3.50"'}</span>, network: <span className="text-blue">{'"base"'}</span>,
             <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;identity: {"{"}
+            &nbsp;&nbsp;&nbsp;&nbsp;agent: {"{"} <span className="text-t4">{"// ERC-8004 agent identity"}</span>
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;require_registration: <span className="text-green">true</span>,
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;min_reputation: <span className="text-purple">0.7</span>, <span className="text-t4">{"// optional reputation threshold"}</span>
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;{"}"},
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;identity: {"{"} <span className="text-t4">{"// idOS human credential"}</span>
             <br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provider: <span className="text-green">{'"idOS"'}</span>,
             <br />
@@ -661,9 +794,9 @@ export default function Home() {
               Identity first. Payment second.
             </h2>
             <p className="text-sm leading-relaxed text-t2">
-              If the credential check fails, no USDC is transferred — no refunds needed,
-              no failed transactions. This is true for both personal agents and platform
-              agent fleets.
+              The agent presents its ERC-8004 identity + the human&apos;s idOS credential.
+              If either check fails, no USDC is transferred — no refunds needed,
+              no failed transactions.
             </p>
           </div>
 
@@ -673,14 +806,14 @@ export default function Home() {
               <div className="mb-1.5 text-xl">📡</div>
               <div className="font-mono text-[8px] uppercase tracking-wide text-t4">Step 1</div>
               <h3 className="mt-1 text-[11px] font-semibold text-t1">Request</h3>
-              <p className="mt-0.5 text-[10px] text-t2">Agent sends GET/POST to x402-enabled endpoint</p>
+              <p className="mt-0.5 text-[10px] text-t2">Agent sends GET/POST with ERC-8004 agentId</p>
             </div>
             {/* Step 2 */}
             <div className="bg-s1 p-5 text-center">
               <div className="mb-1.5 text-xl">🚧</div>
               <div className="font-mono text-[8px] uppercase tracking-wide text-t4">Step 2</div>
               <h3 className="mt-1 text-[11px] font-semibold text-t1">402 + Requirements</h3>
-              <p className="mt-0.5 text-[10px] text-t2">Server returns payment terms + identity requirements</p>
+              <p className="mt-0.5 text-[10px] text-t2">Server returns x402 payment terms + idOS identity requirements</p>
             </div>
             {/* Step 3 — Highlighted */}
             <div className="bg-green-dim p-5 text-center">
@@ -688,7 +821,7 @@ export default function Home() {
               <div className="font-mono text-[8px] uppercase tracking-wide text-green">Step 3</div>
               <h3 className="mt-1 text-[11px] font-semibold text-green">Verify Identity</h3>
               <p className="mt-0.5 text-[10px] text-t2">
-                dAG + credential hash verified on idOS <strong className="text-t1">before</strong> payment
+                ERC-8004 agent identity + idOS dAG verified <strong className="text-t1">before</strong> payment
               </p>
             </div>
             {/* Step 4 */}
@@ -710,7 +843,7 @@ export default function Home() {
       </section>
 
       {/* ── Architecture Section ── */}
-      <section id="arch" className="relative border-y border-b1 bg-s1 px-6 py-24 md:py-32">
+      <section id="arch" className="relative px-6 py-24 md:py-32">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 max-w-2xl">
             <span className="mb-2 inline-block font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-purple">
@@ -849,6 +982,19 @@ export default function Home() {
               </div>
               <div className="divide-y divide-b1 bg-s1 px-3.5 py-3">
                 <div className="flex items-start gap-2 py-2">
+                  <span className="mt-0.5 shrink-0 text-sm">🤖</span>
+                  <div>
+                    <h5 className="text-[11.5px] font-semibold text-t1">ERC-8004: Trustless Agents</h5>
+                    <p className="text-[10px] leading-snug text-t3">
+                      On-chain Identity, Reputation & Validation registries for AI
+                      agents. ERC-721-based agent identity NFTs. Live on mainnet.{" "}
+                      <code className="rounded border border-b1 bg-s3 px-1 py-0.5 font-mono text-[9px] text-green">
+                        EIP-8004 · 8004.org
+                      </code>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 py-2">
                   <span className="mt-0.5 shrink-0 text-sm">⚡</span>
                   <div>
                     <h5 className="text-[11.5px] font-semibold text-t1">x402 Protocol</h5>
@@ -972,9 +1118,10 @@ export default function Home() {
             Access <span className="italic text-green">everything.</span>
           </h2>
           <p className="mx-auto mb-8 max-w-md text-sm leading-relaxed text-t2">
-            Every identity-gated API — credit bureaus, background checks, age gates,
-            regulated filings — becomes a potential idOS integration. Trusted Agents is
-            the marketplace that ties it all together.
+            ERC-8004 gives every agent an on-chain identity. idOS gives every
+            human a portable credential. Trusted Agents is the marketplace where
+            they meet — and every identity-gated API becomes a single integration
+            away.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -1001,6 +1148,14 @@ export default function Home() {
               SDK
             </a>
             <a
+              href="https://eips.ethereum.org/EIPS/eip-8004"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-b1 px-5 py-2.5 font-mono text-sm font-medium text-t2 transition-all hover:bg-s1 hover:border-b2 hover:text-t1"
+            >
+              ERC-8004
+            </a>
+            <a
               href="https://www.x402.org"
               target="_blank"
               rel="noopener noreferrer"
@@ -1015,9 +1170,13 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="border-t border-b1 px-6 py-6 text-center">
         <span className="font-mono text-[9.5px] text-t4">
-          idOS Trusted Agents — Product Brief ·{" "}
+          idOS Trusted Agents — Built on ERC-8004 ·{" "}
           <a href="https://idos.network" target="_blank" rel="noopener noreferrer" className="text-t3 transition-colors hover:text-green">
             idos.network
+          </a>{" "}
+          ·{" "}
+          <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" className="text-t3 transition-colors hover:text-green">
+            ERC-8004
           </a>{" "}
           ·{" "}
           <a href="https://x402.org" target="_blank" rel="noopener noreferrer" className="text-t3 transition-colors hover:text-green">
