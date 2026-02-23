@@ -860,99 +860,123 @@ export default function Home() {
           </div>
 
           <div className="overflow-x-auto">
-            <svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg" className="w-full min-w-[780px]">
+            <svg viewBox="0 0 960 570" xmlns="http://www.w3.org/2000/svg" className="w-full min-w-[900px]">
               <defs>
                 <marker id="ag" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#00e87b" /></marker>
                 <marker id="ab" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#4d90ff" /></marker>
                 <marker id="ao" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#ff8c3a" /></marker>
                 <marker id="ap" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#9d7aff" /></marker>
+                <marker id="ay" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#ffd84d" /></marker>
               </defs>
 
-              {/* Columns */}
-              <rect x="10" y="10" width="110" height="42" rx="5" fill="#0b0b0f" stroke="#00e87b" strokeWidth="1" />
-              <text x="65" y="26" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="600">Agent / Client</text>
-              <text x="65" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7">JS SDK · Smart Account</text>
-              <line x1="65" y1="52" x2="65" y2="490" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+              {/* Columns — 6 columns */}
+              <rect x="10" y="10" width="105" height="42" rx="5" fill="#0b0b0f" stroke="#00e87b" strokeWidth="1" />
+              <text x="62" y="26" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">Agent / Client</text>
+              <text x="62" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">JS SDK · Smart Account</text>
+              <line x1="62" y1="52" x2="62" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
 
-              <rect x="175" y="10" width="120" height="42" rx="5" fill="#0b0b0f" stroke="#4d90ff" strokeWidth="1" />
-              <text x="235" y="26" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="600">API Server</text>
-              <text x="235" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7">Node middleware (npm)</text>
-              <line x1="235" y1="52" x2="235" y2="490" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+              <rect x="155" y="10" width="110" height="42" rx="5" fill="#0b0b0f" stroke="#4d90ff" strokeWidth="1" />
+              <text x="210" y="26" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">API Server</text>
+              <text x="210" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Node middleware (npm)</text>
+              <line x1="210" y1="52" x2="210" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
 
-              <rect x="355" y="10" width="120" height="42" rx="5" fill="#0b0b0f" stroke="#9d7aff" strokeWidth="1" />
-              <text x="415" y="26" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="600">x402 Facilitator</text>
-              <text x="415" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7">Hosted service (Coinbase)</text>
-              <line x1="415" y1="52" x2="415" y2="490" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+              <rect x="305" y="10" width="115" height="42" rx="5" fill="#0b0b0f" stroke="#ffd84d" strokeWidth="1" />
+              <text x="362" y="26" textAnchor="middle" fill="#ffd84d" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">ERC-8004</text>
+              <text x="362" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Identity · Reputation</text>
+              <line x1="362" y1="52" x2="362" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
 
-              <rect x="535" y="10" width="100" height="42" rx="5" fill="#0b0b0f" stroke="#00e87b" strokeWidth="1" />
-              <text x="585" y="26" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="600">idOS Network</text>
-              <text x="585" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7">Kwil chain · Contracts</text>
-              <line x1="585" y1="52" x2="585" y2="490" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+              <rect x="460" y="10" width="110" height="42" rx="5" fill="#0b0b0f" stroke="#9d7aff" strokeWidth="1" />
+              <text x="515" y="26" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">x402 Facilitator</text>
+              <text x="515" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Hosted (Coinbase)</text>
+              <line x1="515" y1="52" x2="515" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
 
-              <rect x="695" y="10" width="100" height="42" rx="5" fill="#0b0b0f" stroke="#ff8c3a" strokeWidth="1" />
-              <text x="745" y="26" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="600">Base L2</text>
-              <text x="745" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7">EVM · USDC contract</text>
-              <line x1="745" y1="52" x2="745" y2="490" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+              <rect x="610" y="10" width="105" height="42" rx="5" fill="#0b0b0f" stroke="#00e87b" strokeWidth="1" />
+              <text x="662" y="26" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">idOS Network</text>
+              <text x="662" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Kwil chain · Contracts</text>
+              <line x1="662" y1="52" x2="662" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+
+              <rect x="755" y="10" width="95" height="42" rx="5" fill="#0b0b0f" stroke="#ff8c3a" strokeWidth="1" />
+              <text x="802" y="26" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="8.5" fontWeight="600">Base L2</text>
+              <text x="802" y="42" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">EVM · USDC</text>
+              <line x1="802" y1="52" x2="802" y2="540" stroke="#242434" strokeWidth=".5" strokeDasharray="3,3" />
+
+              {/* Phase 0: Agent Registration (one-time) */}
+              <rect x="0" y="62" width="960" height="14" rx="0" fill="#ffd84d05" />
+              <text x="480" y="72" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7" letterSpacing=".12em">ONE-TIME SETUP — AGENT REGISTERS ON ERC-8004</text>
+
+              <line x1="62" y1="90" x2="357" y2="90" stroke="#ffd84d" strokeWidth="1" markerEnd="url(#ay)" />
+              <text x="210" y="84" textAnchor="middle" fill="#ffd84d" fontFamily="JetBrains Mono, monospace" fontSize="7">0a. register(agentURI) → mint identity NFT</text>
+
+              <line x1="62" y1="108" x2="657" y2="108" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
+              <text x="360" y="102" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7">0b. FaceSign → credential stored on idOS (encrypted)</text>
 
               {/* Phase 1: First call */}
-              <rect x="0" y="62" width="820" height="14" rx="0" fill="#00e87b05" />
-              <text x="410" y="72" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7" letterSpacing=".12em">FIRST CALL — FULL VERIFICATION (IDENTITY → PAYMENT)</text>
+              <rect x="0" y="124" width="960" height="14" rx="0" fill="#00e87b05" />
+              <text x="480" y="134" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7" letterSpacing=".12em">FIRST CALL — FULL VERIFICATION (AGENT IDENTITY → HUMAN IDENTITY → PAYMENT)</text>
 
-              <line x1="65" y1="90" x2="230" y2="90" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
-              <text x="147" y="84" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="7.5">1. GET /resource</text>
+              <line x1="62" y1="152" x2="205" y2="152" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
+              <text x="134" y="146" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="7">1. GET /resource + agentId</text>
 
-              <line x1="235" y1="108" x2="70" y2="108" stroke="#ff8c3a" strokeWidth="1" markerEnd="url(#ao)" />
-              <text x="152" y="102" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="7.5">2. 402 + identity req + payment req</text>
+              <line x1="210" y1="170" x2="67" y2="170" stroke="#ff8c3a" strokeWidth="1" markerEnd="url(#ao)" />
+              <text x="138" y="164" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="7">2. 402 + identity req + payment req</text>
 
-              <rect x="10" y="118" width="110" height="36" rx="4" fill="#00e87b06" stroke="#00e87b" strokeWidth=".5" />
-              <text x="65" y="130" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7">3. FaceSign → Relay →</text>
-              <text x="65" y="144" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="7">KYC provider → credential</text>
+              <line x1="62" y1="192" x2="205" y2="192" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
+              <text x="134" y="186" textAnchor="middle" fill="#ededf2" fontFamily="JetBrains Mono, monospace" fontSize="7">3. Retry: GET + agentId + dAG + payment</text>
 
-              <line x1="65" y1="164" x2="580" y2="164" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
-              <text x="322" y="158" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7.5">4. Credential stored on idOS (encrypted)</text>
+              {/* Agent identity check box */}
+              <rect x="150" y="202" width="270" height="50" rx="0" fill="#ffd84d04" stroke="#ffd84d" strokeWidth=".3" strokeDasharray="4,2" />
+              <text x="285" y="213" textAnchor="middle" fill="#ffd84d" fontFamily="JetBrains Mono, monospace" fontSize="6.5" fontWeight="700" letterSpacing=".1em">AGENT IDENTITY (ERC-8004)</text>
 
-              <line x1="65" y1="186" x2="230" y2="186" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
-              <text x="147" y="180" textAnchor="middle" fill="#ededf2" fontFamily="JetBrains Mono, monospace" fontSize="7.5">5. Retry: GET + dAG + payment</text>
+              <line x1="210" y1="226" x2="357" y2="226" stroke="#ffd84d" strokeWidth=".8" markerEnd="url(#ay)" />
+              <text x="284" y="222" textAnchor="middle" fill="#ffd84d" fontFamily="JetBrains Mono, monospace" fontSize="6.5">4. Verify agentId + reputation</text>
+              <line x1="362" y1="240" x2="215" y2="240" stroke="#42424f" strokeWidth=".5" strokeDasharray="3,3" markerEnd="url(#ab)" />
+              <text x="288" y="237" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6">agent ✓ (NFT + score)</text>
 
-              {/* Identity check box */}
-              <rect x="170" y="196" width="480" height="56" rx="0" fill="#00e87b04" stroke="#00e87b" strokeWidth=".3" strokeDasharray="4,2" />
-              <text x="410" y="207" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7" fontWeight="700" letterSpacing=".1em">IDENTITY VERIFIED FIRST</text>
+              {/* Human identity check box */}
+              <rect x="150" y="258" width="570" height="50" rx="0" fill="#00e87b04" stroke="#00e87b" strokeWidth=".3" strokeDasharray="4,2" />
+              <text x="435" y="269" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="6.5" fontWeight="700" letterSpacing=".1em">HUMAN IDENTITY (idOS)</text>
 
-              <line x1="235" y1="220" x2="580" y2="220" stroke="#00e87b" strokeWidth=".8" markerEnd="url(#ag)" />
-              <text x="407" y="216" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7">6. Verify dAG + credential hash</text>
-              <line x1="585" y1="236" x2="240" y2="236" stroke="#42424f" strokeWidth=".5" strokeDasharray="3,3" markerEnd="url(#ab)" />
-              <text x="412" y="233" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">identity ✓ (hash only, 0 PII)</text>
+              <line x1="210" y1="282" x2="657" y2="282" stroke="#00e87b" strokeWidth=".8" markerEnd="url(#ag)" />
+              <text x="434" y="278" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="6.5">5. Verify dAG + credential hash</text>
+              <line x1="662" y1="296" x2="215" y2="296" stroke="#42424f" strokeWidth=".5" strokeDasharray="3,3" markerEnd="url(#ab)" />
+              <text x="438" y="293" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6">human ✓ (hash only, 0 PII)</text>
 
               {/* Payment box */}
-              <rect x="170" y="260" width="590" height="54" rx="0" fill="#9d7aff04" stroke="#9d7aff" strokeWidth=".3" strokeDasharray="4,2" />
-              <text x="465" y="271" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="7" fontWeight="700" letterSpacing=".1em">THEN PAYMENT SETTLES</text>
+              <rect x="150" y="314" width="710" height="50" rx="0" fill="#9d7aff04" stroke="#9d7aff" strokeWidth=".3" strokeDasharray="4,2" />
+              <text x="505" y="325" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="6.5" fontWeight="700" letterSpacing=".1em">THEN PAYMENT SETTLES</text>
 
-              <line x1="235" y1="284" x2="410" y2="284" stroke="#9d7aff" strokeWidth=".8" markerEnd="url(#ap)" />
-              <text x="322" y="280" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="7">7. Verify x402 payment</text>
-              <line x1="415" y1="298" x2="740" y2="298" stroke="#ff8c3a" strokeWidth=".8" markerEnd="url(#ao)" />
-              <text x="577" y="294" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="7">8. Settle USDC on Base</text>
+              <line x1="210" y1="338" x2="510" y2="338" stroke="#9d7aff" strokeWidth=".8" markerEnd="url(#ap)" />
+              <text x="360" y="334" textAnchor="middle" fill="#9d7aff" fontFamily="JetBrains Mono, monospace" fontSize="6.5">6. Verify x402 payment</text>
+              <line x1="515" y1="352" x2="797" y2="352" stroke="#ff8c3a" strokeWidth=".8" markerEnd="url(#ao)" />
+              <text x="656" y="348" textAnchor="middle" fill="#ff8c3a" fontFamily="JetBrains Mono, monospace" fontSize="6.5">7. Settle USDC on Base</text>
 
-              <line x1="235" y1="330" x2="70" y2="330" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
-              <text x="152" y="324" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7.5">9. 200 OK + resource</text>
+              <line x1="210" y1="380" x2="67" y2="380" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
+              <text x="138" y="374" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7">8. 200 OK + resource</text>
+
+              {/* Reputation feedback */}
+              <line x1="210" y1="398" x2="357" y2="398" stroke="#ffd84d" strokeWidth=".6" strokeDasharray="3,2" markerEnd="url(#ay)" />
+              <text x="284" y="394" textAnchor="middle" fill="#ffd84d" fontFamily="JetBrains Mono, monospace" fontSize="6">9. Post reputation feedback</text>
 
               {/* Phase 2: Subsequent */}
-              <rect x="0" y="348" width="820" height="14" rx="0" fill="#4d90ff05" />
-              <text x="410" y="358" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7" letterSpacing=".12em">SUBSEQUENT CALLS — INSTANT REUSE (SAME FOR PERSONAL AGENTS + PLATFORM FLEETS)</text>
+              <rect x="0" y="414" width="960" height="14" rx="0" fill="#4d90ff05" />
+              <text x="480" y="424" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="7" letterSpacing=".12em">SUBSEQUENT CALLS — INSTANT REUSE</text>
 
-              <line x1="65" y1="380" x2="230" y2="380" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
-              <text x="147" y="374" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="7.5">GET + dAG + payment (1 request)</text>
+              <line x1="62" y1="446" x2="205" y2="446" stroke="#4d90ff" strokeWidth="1" markerEnd="url(#ab)" />
+              <text x="134" y="440" textAnchor="middle" fill="#4d90ff" fontFamily="JetBrains Mono, monospace" fontSize="7">GET + agentId + dAG + payment</text>
 
-              <line x1="235" y1="396" x2="580" y2="396" stroke="#00e87b" strokeWidth=".6" markerEnd="url(#ag)" />
-              <text x="407" y="392" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">identity ✓ (existing credential, new dAG)</text>
+              <line x1="210" y1="462" x2="357" y2="462" stroke="#ffd84d" strokeWidth=".6" markerEnd="url(#ay)" />
+              <text x="284" y="458" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6">agent ✓ (cached reputation)</text>
 
-              <line x1="235" y1="412" x2="410" y2="412" stroke="#9d7aff" strokeWidth=".6" markerEnd="url(#ap)" />
-              <text x="322" y="408" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">payment ✓</text>
+              <line x1="210" y1="478" x2="657" y2="478" stroke="#00e87b" strokeWidth=".6" markerEnd="url(#ag)" />
+              <text x="434" y="474" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6">human ✓ (existing credential, new dAG)</text>
 
-              <line x1="235" y1="430" x2="70" y2="430" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
-              <text x="152" y="424" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7.5">200 OK ⚡</text>
+              <line x1="210" y1="494" x2="510" y2="494" stroke="#9d7aff" strokeWidth=".6" markerEnd="url(#ap)" />
+              <text x="360" y="490" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6">payment ✓</text>
 
-              <text x="410" y="460" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">0 verification. Same credential. New scoped dAG. &lt;300ms.</text>
-              <text x="410" y="475" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Personal agents: delegated session key. Platform agents: fleet delegation per-user.</text>
+              <line x1="210" y1="510" x2="67" y2="510" stroke="#00e87b" strokeWidth="1" markerEnd="url(#ag)" />
+              <text x="138" y="504" textAnchor="middle" fill="#00e87b" fontFamily="JetBrains Mono, monospace" fontSize="7">200 OK ⚡</text>
+
+              <text x="480" y="536" textAnchor="middle" fill="#42424f" fontFamily="JetBrains Mono, monospace" fontSize="6.5">Agent identity (ERC-8004) + human credential (idOS) + payment (x402). &lt;300ms on reuse.</text>
             </svg>
           </div>
         </div>
